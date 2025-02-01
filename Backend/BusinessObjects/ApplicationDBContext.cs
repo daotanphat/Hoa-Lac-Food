@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -24,5 +25,30 @@ namespace BusinessObjects
 			optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 		}
 
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+
+			List<IdentityRole> roles = new List<IdentityRole>
+			{
+				new IdentityRole
+				{
+					Name = "Admin",
+					NormalizedName = "ADMIN"
+				},
+				new IdentityRole
+				{
+					Name = "Shop",
+					NormalizedName = "SHOP"
+				},
+				new IdentityRole
+				{
+					Name = "Customer",
+					NormalizedName = "CUSTOMER"
+				}
+			};
+
+			builder.Entity<IdentityRole>().HasData(roles);
+		}
 	}
 }
