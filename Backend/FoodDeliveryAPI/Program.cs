@@ -1,4 +1,8 @@
+using AutoMapper;
 using BusinessObjects;
+using BusinessObjects.Mappers;
+using FoodDeliveryAPI.Service;
+using FoodDeliveryAPI.Service.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new MapperConfig()));
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
+// Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -23,7 +30,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 	options.Password.RequireLowercase = true;
 	options.Password.RequireUppercase = true;
 	options.Password.RequireNonAlphanumeric = true;
-	options.Password.RequiredLength = 12;
+	options.Password.RequiredLength = 8;
+
+	options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
 builder.Services.AddAuthentication(options =>
@@ -48,6 +57,8 @@ builder.Services.AddAuthentication(options =>
 		)
 	};
 });
+
+builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
 
 var app = builder.Build();
 
