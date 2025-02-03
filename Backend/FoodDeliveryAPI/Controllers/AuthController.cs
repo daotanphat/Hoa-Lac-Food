@@ -17,14 +17,16 @@ namespace FoodDeliveryAPI.Controllers
 	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly ITokenService _tokenService;
+		private readonly SignInManager<AppUser> _signInManager;
 		private readonly IMapper _mapper;
 
 		public AuthController(UserManager<AppUser> userManager, ITokenService tokenService,
-			IMapper mapper)
+			IMapper mapper, SignInManager<AppUser> signInManager)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_mapper = mapper;
+			_signInManager = signInManager;
 		}
 
 		[HttpPost("register")]
@@ -66,6 +68,29 @@ namespace FoodDeliveryAPI.Controllers
 			{
 				return StatusCode(500, e.Message);
 			}
+		}
+
+		[HttpPost("login")]
+		public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+		{
+			var user = await _userManager.FindByNameAsync(request.UserName);
+
+			if (user == null) return Unauthorized("Invalid credential!");
+
+			var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
+			if (!result.Succeeded) return Unauthorized("Username or password is incorrect!");
+
+			var loginResponse = new LoginResponseDTO
+			{
+				UserName = user.UserName,
+				Email = user.Email,
+				Token = _tokenService.CreateToken(user)
+			};
+
+			var response = new ResponseApiDto<LoginResponseDTO>("succes", "Login successfully", loginResponse);
+
+			return Ok(response);
 		}
 	}
 }
