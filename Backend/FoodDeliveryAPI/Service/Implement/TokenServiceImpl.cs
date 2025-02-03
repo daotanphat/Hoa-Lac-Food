@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,9 +11,11 @@ namespace FoodDeliveryAPI.Service.Implement
 	{
 		private readonly IConfiguration _config;
 		private readonly SymmetricSecurityKey _key;
-		public TokenServiceImpl(IConfiguration config)
+		private readonly UserManager<AppUser> _userManager;
+		public TokenServiceImpl(IConfiguration config, UserManager<AppUser> userManager)
 		{
 			_config = config;
+			_userManager = userManager;
 			_key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
 		}
 
@@ -22,6 +25,9 @@ namespace FoodDeliveryAPI.Service.Implement
 			{
 				new Claim(JwtRegisteredClaimNames.Email, user.Email)
 			};
+
+			var roles = _userManager.GetRolesAsync(user).Result;
+			claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 			var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
