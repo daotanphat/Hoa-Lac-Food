@@ -4,9 +4,8 @@ using BusinessObjects.Dtos;
 using BusinessObjects.Dtos.Auth.Request;
 using BusinessObjects.Dtos.Auth.Response;
 using FoodDeliveryAPI.Service;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDeliveryAPI.Controllers
@@ -16,17 +15,17 @@ namespace FoodDeliveryAPI.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly UserManager<AppUser> _userManager;
-		private readonly ITokenService _tokenService;
-		private readonly SignInManager<AppUser> _signInManager;
 		private readonly IMapper _mapper;
+		private readonly IAuthService _authService;
+		private readonly ICartService _cartService;
 
-		public AuthController(UserManager<AppUser> userManager, ITokenService tokenService,
-			IMapper mapper, SignInManager<AppUser> signInManager)
+		public AuthController(UserManager<AppUser> userManager, IMapper mapper,
+			IAuthService authService, ICartService cartService)
 		{
 			_userManager = userManager;
-			_tokenService = tokenService;
 			_mapper = mapper;
-			_signInManager = signInManager;
+			_authService = authService;
+			_cartService = cartService;
 		}
 
 		[HttpPost("register")]
@@ -49,6 +48,7 @@ namespace FoodDeliveryAPI.Controllers
 					var roleResult = await _userManager.AddToRoleAsync(appUser, "Customer");
 					if (roleResult.Succeeded)
 					{
+						await _cartService.CreateCart(appUser);
 						var userResponse = _mapper.Map<RegisterResponseDto>(appUser);
 						ResponseApiDto<RegisterResponseDto> response
 							= new ResponseApiDto<RegisterResponseDto>("Success", "Register Successfully!", userResponse);
@@ -73,24 +73,20 @@ namespace FoodDeliveryAPI.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 		{
-			var user = await _userManager.FindByNameAsync(request.UserName);
+			var result = await _authService.Login(request);
 
-			if (user == null) return Unauthorized("Invalid credential!");
+			if (result == null) return Unauthorized("Username or password is incorrect!");
 
-			var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-			if (!result.Succeeded) return Unauthorized("Username or password is incorrect!");
-
-			var loginResponse = new LoginResponseDTO
-			{
-				UserName = user.UserName,
-				Email = user.Email,
-				Token = _tokenService.CreateToken(user)
-			};
-
-			var response = new ResponseApiDto<LoginResponseDTO>("succes", "Login successfully", loginResponse);
+			var response = new ResponseApiDto<LoginResponseDTO>("succes", "Login successfully", result);
 
 			return Ok(response);
+		}
+
+		[Authorize(Roles = "Customer")]
+		[HttpGet("test")]
+		public async Task<IActionResult> test()
+		{
+			return Ok();
 		}
 	}
 }

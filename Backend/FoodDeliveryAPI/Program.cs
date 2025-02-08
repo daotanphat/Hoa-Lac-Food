@@ -1,6 +1,7 @@
 using AutoMapper;
 using BusinessObjects;
 using BusinessObjects.Mappers;
+using FoodDeliveryAPI.Repository;
 using FoodDeliveryAPI.Service;
 using FoodDeliveryAPI.Service.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +60,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
+builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<ICartService, CartServiceImpl>();
+builder.Services.AddScoped<CartRepository>();
 
 var app = builder.Build();
 
