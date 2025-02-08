@@ -45,7 +45,7 @@ namespace FoodDeliveryAPI.Controllers
 
 				if (createdUser.Succeeded)
 				{
-					var roleResult = await _userManager.AddToRoleAsync(appUser, "Customer");
+					var roleResult = await _userManager.AddToRoleAsync(appUser, request.Role);
 					if (roleResult.Succeeded)
 					{
 						await _cartService.CreateCart(appUser);
