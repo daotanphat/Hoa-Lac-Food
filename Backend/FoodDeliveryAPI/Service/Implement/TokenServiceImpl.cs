@@ -46,5 +46,16 @@ namespace FoodDeliveryAPI.Service.Implement
 
 			return tokenHandler.WriteToken(token);
 		}
+
+		public ClaimsPrincipal GetPrincipalFromToken(string token)
+		{
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+			if (jwtToken == null) return null;
+
+			var claimsIdentity = new ClaimsIdentity(jwtToken.Claims);
+			return new ClaimsPrincipal(claimsIdentity);
+		}
 	}
 }
