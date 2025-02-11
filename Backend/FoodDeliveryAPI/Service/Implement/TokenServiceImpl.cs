@@ -54,7 +54,7 @@ namespace FoodDeliveryAPI.Service.Implement
 
 			if (jwtToken == null) return null;
 
-			var claimsIdentity = new ClaimsIdentity(jwtToken.Claims);
+			var claimsIdentity = new ClaimsIdentity(jwtToken.Claims, "Bearer");
 			return new ClaimsPrincipal(claimsIdentity);
 		}
 	}
