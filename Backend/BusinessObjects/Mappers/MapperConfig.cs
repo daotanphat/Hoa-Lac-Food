@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Dtos.Auth.Response;
+using BusinessObjects.Dtos.Shop.Request;
+using BusinessObjects.Dtos.Shop.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,12 @@ namespace BusinessObjects.Mappers
 		{
 			// AppUser
 			CreateMap<AppUser, RegisterResponseDto>().ReverseMap();
+
+			// Shop
+			CreateMap<CreateShopRequestDto, Shop>()
+				.ForMember(dest => dest.Image, opt => opt.Ignore())
+				.ReverseMap();
+			CreateMap<Shop, CreateShopResponseDto>().ReverseMap();
 		}
 	}
 }

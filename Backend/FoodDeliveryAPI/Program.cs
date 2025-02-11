@@ -5,6 +5,7 @@ using FoodDeliveryAPI.Repository;
 using FoodDeliveryAPI.Service;
 using FoodDeliveryAPI.Service.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -59,9 +60,17 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+builder.Services.Configure<FormOptions>(options =>
+{
+	options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+});
+
 builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<IUserService, UserServiceImpl>();
+builder.Services.AddScoped<IShopService, ShopServiceImpl>();
 builder.Services.AddScoped<ICartService, CartServiceImpl>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryServiceImpl>();
 builder.Services.AddScoped<CartRepository>();
 
 var app = builder.Build();
