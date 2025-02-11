@@ -4,6 +4,6 @@ namespace FoodDeliveryAPI.Service
 {
 	public interface ICloudinaryService
 	{
-		string UploadPhoto(IFormFile photo, string folderName);
+		Task<string> UploadPhoto(IFormFile photo, string folderName);
 	}
 }
