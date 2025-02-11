@@ -21,22 +21,20 @@ namespace FoodDeliveryAPI.Service.Implement
 
 			_cloudinary = new Cloudinary(account);
 		}
-		public string UploadPhoto(IFormFile photo, string folderName)
+		public async Task<string> UploadPhoto(IFormFile photo, string folderName)
 		{
 			var uploadResult = new ImageUploadResult();
 
 			if (photo.Length > 0)
 			{
-				using (var stream = photo.OpenReadStream())
+				await using var stream = photo.OpenReadStream();
+				var uploadParams = new ImageUploadParams()
 				{
-					var uploadParams = new ImageUploadParams()
-					{
-						File = new FileDescription(photo.Name, stream),
-						Folder = folderName
-					};
+					File = new FileDescription(photo.Name, stream),
+					Folder = folderName
+				};
 
-					uploadResult = _cloudinary.Upload(uploadParams);
-				}
+				uploadResult = _cloudinary.Upload(uploadParams);
 			}
 
 			return uploadResult.SecureUrl.ToString();
