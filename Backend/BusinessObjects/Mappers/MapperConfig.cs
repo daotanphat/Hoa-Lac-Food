@@ -22,6 +22,7 @@ namespace BusinessObjects.Mappers
 				.ForMember(dest => dest.Image, opt => opt.Ignore())
 				.ReverseMap();
 			CreateMap<Shop, CreateShopResponseDto>().ReverseMap();
+			CreateMap<Shop, ShopResponseDto>().ReverseMap();
 		}
 	}
 }

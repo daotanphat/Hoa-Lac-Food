@@ -7,5 +7,6 @@ namespace FoodDeliveryAPI.Service
 	{
 		Task<Shop> CreateShop(CreateShopRequestDto request, AppUser user, IFormFile photo);
 		Task<bool> IsShopNameUnique(string name);
+		Task<Shop> UpdateShopStatement(string shopName);
 	}
 }

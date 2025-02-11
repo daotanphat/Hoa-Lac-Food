@@ -46,5 +46,23 @@ namespace FoodDeliveryAPI.Controllers
 
 			return Ok(response);
 		}
+
+		[Authorize(Roles = "Shop")]
+		[HttpPut("{shopName}/update-statement")]
+		public async Task<IActionResult> UpdateShopStatement([FromRoute] string shopName)
+		{
+			if (shopName == null) return NotFound("Can not found shop!");
+
+			var shop = await _shopService.UpdateShopStatement(shopName);
+			if (shop == null) return NotFound("Can not found shop!");
+
+			var shopResponse = _mapper.Map<ShopResponseDto>(shop);
+			var response = new ResponseApiDto<ShopResponseDto>(
+				"Success",
+				"Update statement of shop successfully!",
+				shopResponse);
+
+			return Ok(response);
+		}
 	}
 }

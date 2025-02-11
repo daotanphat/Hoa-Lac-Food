@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects;
 using BusinessObjects.Dtos.Shop.Request;
+using FoodDeliveryAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryAPI.Service.Implement
@@ -10,12 +11,14 @@ namespace FoodDeliveryAPI.Service.Implement
 		private readonly ApplicationDBContext _context;
 		private readonly IMapper _mapper;
 		private readonly ICloudinaryService _cloudinaryService;
+		private readonly ShopRepository _shopRepository;
 		public ShopServiceImpl(ApplicationDBContext context, IMapper mapper,
-			ICloudinaryService cloudinaryService)
+			ICloudinaryService cloudinaryService, ShopRepository shopRepository)
 		{
 			_context = context;
 			_mapper = mapper;
 			_cloudinaryService = cloudinaryService;
+			_shopRepository = shopRepository;
 		}
 		public async Task<Shop> CreateShop(CreateShopRequestDto request, AppUser user, IFormFile photo)
 		{
@@ -39,6 +42,20 @@ namespace FoodDeliveryAPI.Service.Implement
 		public async Task<bool> IsShopNameUnique(string name)
 		{
 			return !await _context.Shops.AnyAsync(s => s.Name == name);
+		}
+
+		public async Task<Shop> UpdateShopStatement(string shopName)
+		{
+			if (shopName == null) return null;
+
+			var shop = await _shopRepository.GetShopByName(shopName);
+			if (shop == null) return null;
+
+			shop.IsOpen = !shop.IsOpen;
+			_context.Shops.Update(shop);
+			await _context.SaveChangesAsync();
+
+			return shop;
 		}
 	}
 }

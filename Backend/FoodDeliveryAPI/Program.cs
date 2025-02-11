@@ -72,6 +72,7 @@ builder.Services.AddScoped<IShopService, ShopServiceImpl>();
 builder.Services.AddScoped<ICartService, CartServiceImpl>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryServiceImpl>();
 builder.Services.AddScoped<CartRepository>();
+builder.Services.AddScoped<ShopRepository>();
 
 var app = builder.Build();
 
