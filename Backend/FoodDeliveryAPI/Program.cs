@@ -1,6 +1,7 @@
 using AutoMapper;
 using BusinessObjects;
 using BusinessObjects.Mappers;
+using FoodDeliveryAPI.Exceptions;
 using FoodDeliveryAPI.Repository;
 using FoodDeliveryAPI.Service;
 using FoodDeliveryAPI.Service.Implement;
@@ -18,6 +19,10 @@ builder.Services.AddSingleton(mapper);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHanlder>();
+builder.Services.AddProblemDetails();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -69,10 +74,14 @@ builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IShopService, ShopServiceImpl>();
+builder.Services.AddScoped<IFoodService, FoodServiceImpl>();
+builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
 builder.Services.AddScoped<ICartService, CartServiceImpl>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryServiceImpl>();
 builder.Services.AddScoped<CartRepository>();
 builder.Services.AddScoped<ShopRepository>();
+builder.Services.AddScoped<FoodRepository>();
+builder.Services.AddScoped<CategoryRepository>();
 
 var app = builder.Build();
 
