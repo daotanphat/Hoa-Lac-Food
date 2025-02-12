@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Dtos.Auth.Response;
+using BusinessObjects.Dtos.Food.Request;
+using BusinessObjects.Dtos.Food.Response;
 using BusinessObjects.Dtos.Shop.Request;
 using BusinessObjects.Dtos.Shop.Response;
 using System;
@@ -23,6 +25,13 @@ namespace BusinessObjects.Mappers
 				.ReverseMap();
 			CreateMap<Shop, CreateShopResponseDto>().ReverseMap();
 			CreateMap<Shop, ShopResponseDto>().ReverseMap();
+
+			// Food
+			CreateMap<CreateFoodRequestDto, Food>().ReverseMap();
+			CreateMap<Food, FoodResponseDto>()
+				.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+				.ForMember(dest => dest.ShopName, opt => opt.MapFrom(src => src.Shop.Name))
+				.ReverseMap();
 		}
 	}
 }
