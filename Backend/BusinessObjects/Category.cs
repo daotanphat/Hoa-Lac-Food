@@ -12,7 +12,7 @@ namespace BusinessObjects
 		public string Name { get; set; } = string.Empty;
 		public DateTime CreateAt { get; set; } = DateTime.Now;
 
-		public int CreatedBy { get; set; }
+		public string CreatedBy { get; set; }
 		public AppUser CreatedUser { get; set; } = null!;
 
 		public ICollection<Food> Foods { get; set; } = new List<Food>();
