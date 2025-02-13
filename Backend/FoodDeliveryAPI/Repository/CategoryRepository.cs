@@ -34,5 +34,12 @@ namespace FoodDeliveryAPI.Repository
 				throw new InvalidOperationException(ex.Message);
 			}
 		}
+
+		public async Task<List<Category>> GetAllCategoriesAsync()
+		{
+			return await _context.Categories
+				.Include(c => c.CreatedUser)
+				.ToListAsync();
+		}
 	}
 }

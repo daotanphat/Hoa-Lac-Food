@@ -26,5 +26,10 @@ namespace FoodDeliveryAPI.Service.Implement
 			if (categoryCreated == null) throw new InvalidOperationException("Create category fail!");
 			return categoryCreated;
 		}
+
+		public async Task<List<Category>> GetAllCategories()
+		{
+			return await _categoryRepo.GetAllCategoriesAsync();
+		}
 	}
 }

@@ -45,5 +45,19 @@ namespace FoodDeliveryAPI.Controllers
 
 			return Ok(response);
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetAllCategory()
+		{
+			var categories = await _categoryService.GetAllCategories();
+			if (categories == null || categories.Count == 0) return NotFound("Not found any category!");
+			List<CategoryResponseDto> categoriesResponse = _mapper.Map<List<CategoryResponseDto>>(categories);
+			var response = new ResponseApiDto<List<CategoryResponseDto>>(
+				"sucess",
+				"Get all categories successfully!",
+				categoriesResponse);
+
+			return Ok(response);
+		}
 	}
 }
