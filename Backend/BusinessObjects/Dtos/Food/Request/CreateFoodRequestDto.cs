@@ -15,7 +15,7 @@ namespace BusinessObjects.Dtos.Food.Request
 		[StringLength(100, ErrorMessage = "Food name cannot exceed 100 characters.")]
 		[RegularExpression(@"^[a-zA-Z0-9 ]*$", ErrorMessage = "Food name must not contain special characters.")]
 		public string Name { get; set; } = string.Empty;
-		[Required(ErrorMessage = "Price is required")]
+		[Required(ErrorMessage = "Price is required.")]
 		[Range(0.01, 999999.99, ErrorMessage = "Price must be between 0.01 and 999999.99.")]
 		[Precision(18, 2)]
 		public decimal Price { get; set; }
@@ -27,7 +27,6 @@ namespace BusinessObjects.Dtos.Food.Request
 		public int Quantity { get; set; }
 		[Required(ErrorMessage = "Category ID is required.")]
 		[Range(1, int.MaxValue, ErrorMessage = "Invalid Category ID.")]
-
 		public int CategoryId { get; set; }
 	}
 }

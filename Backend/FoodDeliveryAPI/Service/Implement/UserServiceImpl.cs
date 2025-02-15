@@ -1,6 +1,7 @@
 ﻿using BusinessObjects;
 using FoodDeliveryAPI.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -21,9 +22,11 @@ namespace FoodDeliveryAPI.Service.Implement
 			if (principal == null) throw new ForbiddenException("You are not have permission!");
 
 			var email = principal.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-			if (string.IsNullOrEmpty(email)) throw new InvalidOperationException("Not found email!");
+			if (string.IsNullOrEmpty(email)) throw new UnauthorizedAccessException("Not found email in token!");
 
-			var user = await _userManager.FindByEmailAsync(email);
+			var user = await _userManager.Users
+				.Include(u => u.Shop)
+				.FirstOrDefaultAsync(u => u.Email == email);
 			if (user == null) throw new EntityNotFoundException("User not found");
 			return user;
 		}

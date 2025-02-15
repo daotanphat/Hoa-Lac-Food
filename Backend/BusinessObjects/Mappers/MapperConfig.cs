@@ -29,7 +29,9 @@ namespace BusinessObjects.Mappers
 			CreateMap<Shop, ShopResponseDto>().ReverseMap();
 
 			// Food
-			CreateMap<CreateFoodRequestDto, Food>().ReverseMap();
+			CreateMap<CreateFoodRequestDto, Food>()
+				.ForMember(dest => dest.Image, opt => opt.Ignore())
+				.ReverseMap();
 			CreateMap<Food, FoodResponseDto>()
 				.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
 				.ForMember(dest => dest.ShopName, opt => opt.MapFrom(src => src.Shop.Name))

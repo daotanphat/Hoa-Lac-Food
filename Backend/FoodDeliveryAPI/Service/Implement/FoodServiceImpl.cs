@@ -28,20 +28,20 @@ namespace FoodDeliveryAPI.Service.Implement
 		public async Task<Food> CreateFood(CreateFoodRequestDto request, Shop shop)
 		{
 			var foodExist = await _foodRepo.IsFoodExist(request.Name, shop.Id);
-			if (foodExist) throw new InvalidOperationException($"Food with name {request.Name} is already exist!");
+			if (foodExist) throw new ArgumentException($"Food with name {request.Name} is already exist in this shop!");
 
 			var categoryExist = await _categoryRepo.IsCategoryExist(request.CategoryId);
-			if (!categoryExist) throw new EntityNotFoundException($"Category not found");
+			if (!categoryExist) throw new ArgumentException($"Category with id {request.CategoryId} not found");
 
 			var foodCreated = _mapper.Map<Food>(request);
+			foodCreated.Category = await _categoryRepo.GetCategoryByIdAsync(request.CategoryId);
 			foodCreated.ShopId = shop.Id;
 
 			string photoUrl = await _cloudinaryService.UploadPhoto(request.Image, $"food_delivery/Shop/{shop.Name}/Product");
 			foodCreated.Image = photoUrl;
-			await _context.Foods.AddAsync(foodCreated);
-			await _context.SaveChangesAsync();
 
-			return foodCreated;
+			var food = await _foodRepo.CreateFoodAsync(foodCreated);
+			return food;
 		}
 
 		public async Task<Food> UpdateFoodStatus(int id)

@@ -9,13 +9,13 @@ namespace BusinessObjects.Dtos.Food.Response
 {
 	public class FoodResponseDto
 	{
-		public string Name { get; set; } = String.Empty;
+		public string Name { get; set; } = string.Empty;
 		public decimal Price { get; set; }
-		public string Image { get; set; } = String.Empty;
+		public string Image { get; set; } = string.Empty;
 		public int Quantity { get; set; }
 		public bool Available { get; set; } = true;
 		public DateTime CreateAt { get; set; } = DateTime.Now;
-		public string CategoryName { get; set; } = String.Empty;
-		public string ShopName { get; set; } = String.Empty;
+		public string CategoryName { get; set; } = string.Empty;
+		public string ShopName { get; set; } = string.Empty;
 	}
 }
