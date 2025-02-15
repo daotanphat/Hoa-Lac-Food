@@ -100,6 +100,7 @@ app.UseCors(x => x.AllowAnyMethod()
 				.WithOrigins("http://localhost:3000")
 				.SetIsOriginAllowed(origin => true));
 
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 

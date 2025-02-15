@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json;
 
 namespace FoodDeliveryAPI.Exceptions
 {
@@ -18,7 +19,15 @@ namespace FoodDeliveryAPI.Exceptions
 			};
 
 			httpContext.Response.StatusCode = statusCode;
-			await httpContext.Response.WriteAsJsonAsync(new { message }, cancellationToken);
+
+			var errorResponse = new
+			{
+				status = statusCode,
+				message = message,
+				errorType = exception.GetType().Name
+			};
+
+			await httpContext.Response.WriteAsync(JsonSerializer.Serialize(errorResponse), cancellationToken);
 			return true;
 		}
 	}
