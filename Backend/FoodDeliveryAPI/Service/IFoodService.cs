@@ -6,5 +6,6 @@ namespace FoodDeliveryAPI.Service
 	public interface IFoodService
 	{
 		Task<Food> CreateFood(CreateFoodRequestDto request, Shop shop);
+		Task<Food> UpdateFoodStatus(int id);
 	}
 }

@@ -27,7 +27,7 @@ namespace FoodDeliveryAPI.Service.Implement
 		}
 		public async Task<Food> CreateFood(CreateFoodRequestDto request, Shop shop)
 		{
-			var foodExist = await _foodRepo.IsFoodExist(request.Name);
+			var foodExist = await _foodRepo.IsFoodExist(request.Name, shop.Id);
 			if (foodExist) throw new InvalidOperationException($"Food with name {request.Name} is already exist!");
 
 			var categoryExist = await _categoryRepo.IsCategoryExist(request.CategoryId);
@@ -42,6 +42,17 @@ namespace FoodDeliveryAPI.Service.Implement
 			await _context.SaveChangesAsync();
 
 			return foodCreated;
+		}
+
+		public async Task<Food> UpdateFoodStatus(int id)
+		{
+			var food = await _foodRepo.GetFoodByIdAsync(id);
+			if (food == null) throw new EntityNotFoundException("Food not found!");
+			food.Available = !food.Available;
+
+			await _foodRepo.UpdateFood(food);
+
+			return food;
 		}
 	}
 }

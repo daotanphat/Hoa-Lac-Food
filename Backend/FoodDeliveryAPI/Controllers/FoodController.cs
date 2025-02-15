@@ -23,6 +23,7 @@ namespace FoodDeliveryAPI.Controllers
 			_mapper = mapper;
 			_userService = userService;
 		}
+
 		[Authorize(Roles = "Shop")]
 		[HttpPost]
 		public async Task<IActionResult> CreateFood([FromForm] CreateFoodRequestDto request,
@@ -42,6 +43,20 @@ namespace FoodDeliveryAPI.Controllers
 			var response = new ResponseApiDto<FoodResponseDto>(
 				"success",
 				"Create food successfully!",
+				foodResponse);
+
+			return Ok(response);
+		}
+
+		[Authorize(Roles = "Shop")]
+		[HttpPut("{id}/update-status")]
+		public async Task<IActionResult> UpdateFoodStatus([FromRoute] int id)
+		{
+			var food = await _foodService.UpdateFoodStatus(id);
+			var foodResponse = _mapper.Map<FoodResponseDto>(food);
+			var response = new ResponseApiDto<FoodResponseDto>(
+				"success",
+				"Update food status successfully!",
 				foodResponse);
 
 			return Ok(response);

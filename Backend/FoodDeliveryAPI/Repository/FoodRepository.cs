@@ -18,9 +18,30 @@ namespace FoodDeliveryAPI.Repository
 			return food;
 		}
 
-		public async Task<bool> IsFoodExist(string foodName)
+		public async Task<bool> IsFoodExist(string foodName, int shopId)
 		{
-			return await _context.Foods.AnyAsync(f => f.Name == foodName);
+			var foodByShop = await _context.Foods.Where(f => f.ShopId == shopId).ToListAsync();
+			return foodByShop.Any(f => f.Name == foodName);
+		}
+
+		public async Task<Food> GetFoodByIdAsync(int id)
+		{
+			return await _context.Foods.FirstOrDefaultAsync(f => f.Id == id);
+		}
+
+		public async Task<Food> UpdateFood(Food food)
+		{
+			try
+			{
+				_context.Foods.Update(food);
+				await _context.SaveChangesAsync();
+
+				return food;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 	}
 }
