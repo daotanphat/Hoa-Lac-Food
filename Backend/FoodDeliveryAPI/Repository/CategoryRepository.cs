@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using FoodDeliveryAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryAPI.Repository
@@ -40,6 +41,30 @@ namespace FoodDeliveryAPI.Repository
 			return await _context.Categories
 				.Include(c => c.CreatedUser)
 				.ToListAsync();
+		}
+
+		public async Task<Category> GetCategoryByIdAsync(int id)
+		{
+			var category = await _context.Categories
+				.Include(c => c.CreatedUser)
+				.FirstOrDefaultAsync(c => c.Id == id);
+			if (category == null) throw new EntityNotFoundException("Category not found!");
+			return category;
+		}
+
+		public async Task<Category> UpdateCategoryAsync(Category category)
+		{
+			try
+			{
+				_context.Categories.Update(category);
+				await _context.SaveChangesAsync();
+
+				return category;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 	}
 }

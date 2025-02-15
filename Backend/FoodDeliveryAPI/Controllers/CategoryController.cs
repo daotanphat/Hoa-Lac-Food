@@ -59,5 +59,20 @@ namespace FoodDeliveryAPI.Controllers
 
 			return Ok(response);
 		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPut("{id}/update")]
+		public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] UpdateCategoryRequestDto request)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+			var category = await _categoryService.UpdateCategory(id, request);
+			var categoryResponse = _mapper.Map<CategoryResponseDto>(category);
+			var response = new ResponseApiDto<CategoryResponseDto>(
+				"success",
+				"Update category successfully",
+				categoryResponse);
+
+			return Ok(response);
+		}
 	}
 }

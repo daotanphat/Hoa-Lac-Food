@@ -31,5 +31,18 @@ namespace FoodDeliveryAPI.Service.Implement
 		{
 			return await _categoryRepo.GetAllCategoriesAsync();
 		}
+
+		public async Task<Category> UpdateCategory(int id, UpdateCategoryRequestDto request)
+		{
+			var category = await _categoryRepo.GetCategoryByIdAsync(id);
+			if (category.Name == request.Name) return category;
+
+			var isCategoryExist = await _categoryRepo.IsCategoryExist(request.Name);
+			if (isCategoryExist) throw new ArgumentException("Category name already exist");
+
+			category.Name = request.Name;
+			var categoryUpdate = await _categoryRepo.UpdateCategoryAsync(category);
+			return categoryUpdate;
+		}
 	}
 }
