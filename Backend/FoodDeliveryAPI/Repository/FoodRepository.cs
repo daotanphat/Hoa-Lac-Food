@@ -26,7 +26,10 @@ namespace FoodDeliveryAPI.Repository
 
 		public async Task<Food> GetFoodByIdAsync(int id)
 		{
-			return await _context.Foods.FirstOrDefaultAsync(f => f.Id == id);
+			return await _context.Foods
+				.Include(f => f.Category)
+				.Include(f => f.Shop)
+				.FirstOrDefaultAsync(f => f.Id == id);
 		}
 
 		public async Task<Food> UpdateFood(Food food)
