@@ -7,5 +7,6 @@ namespace FoodDeliveryAPI.Service
 	{
 		Task<Food> CreateFood(CreateFoodRequestDto request, Shop shop);
 		Task<Food> UpdateFoodStatus(int id);
+		Task<Food> GetFoodDetails(int id);
 	}
 }

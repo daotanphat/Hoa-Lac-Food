@@ -61,5 +61,18 @@ namespace FoodDeliveryAPI.Controllers
 
 			return Ok(response);
 		}
+
+		[HttpGet("{id:int:min(1)}")]
+		public async Task<IActionResult> GetFoodDetails([FromRoute] int id)
+		{
+			var food = await _foodService.GetFoodDetails(id);
+			var foodResponse = _mapper.Map<FoodResponseDto>(food);
+			var response = new ResponseApiDto<FoodResponseDto>("" +
+				"success",
+				"Get food detail successfully!",
+				foodResponse);
+
+			return Ok(response);
+		}
 	}
 }

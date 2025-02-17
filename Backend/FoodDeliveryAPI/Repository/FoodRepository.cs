@@ -29,7 +29,7 @@ namespace FoodDeliveryAPI.Repository
 			return await _context.Foods
 				.Include(f => f.Category)
 				.Include(f => f.Shop)
-				.FirstOrDefaultAsync(f => f.Id == id);
+				.SingleOrDefaultAsync(f => f.Id == id);
 		}
 
 		public async Task<Food> UpdateFood(Food food)

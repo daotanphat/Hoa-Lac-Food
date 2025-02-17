@@ -44,6 +44,11 @@ namespace FoodDeliveryAPI.Service.Implement
 			return food;
 		}
 
+		public async Task<Food> GetFoodDetails(int id)
+		{
+			return await _foodRepo.GetFoodByIdAsync(id) ?? throw new EntityNotFoundException($"Food with id {id} not found!");
+		}
+
 		public async Task<Food> UpdateFoodStatus(int id)
 		{
 			var food = await _foodRepo.GetFoodByIdAsync(id);
