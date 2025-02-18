@@ -46,5 +46,13 @@ namespace FoodDeliveryAPI.Repository
 				throw new Exception(ex.Message);
 			}
 		}
+
+		public IQueryable<Food> GetAllFoodByShopAsync(int shopId)
+		{
+			return _context.Foods
+				.Include(f => f.Category)
+				.Include(f => f.Shop)
+				.Where(f => f.ShopId == shopId);
+		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessObjects;
 using BusinessObjects.Dtos;
 using BusinessObjects.Dtos.Food.Request;
 using BusinessObjects.Dtos.Food.Response;
@@ -6,6 +7,7 @@ using FoodDeliveryAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace FoodDeliveryAPI.Controllers
 {
@@ -73,6 +75,16 @@ namespace FoodDeliveryAPI.Controllers
 				foodResponse);
 
 			return Ok(response);
+		}
+
+		[EnableQuery]
+		[HttpGet("/odata/Food/GetByShop(shopId={shopId:int:min(1)})")]
+		public IActionResult GetFoodByShop([FromRoute] int shopId)
+		{
+			var foods = _foodService.GetAllFoodByShop(shopId);
+			if (foods == null) return NotFound();
+			var foodResponse = _mapper.Map<IEnumerable<FoodResponseDto>>(foods);
+			return Ok(foodResponse);
 		}
 	}
 }
