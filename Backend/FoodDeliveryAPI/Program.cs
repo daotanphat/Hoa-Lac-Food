@@ -8,14 +8,21 @@ using FoodDeliveryAPI.Service.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// using mapper
 var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new MapperConfig()));
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
+// using Odata
+var modelBuilder = new ODataConventionModelBuilder();
+modelBuilder.EntitySet<Food>("Food");
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -30,6 +37,11 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddControllers().AddOData(options =>
+	options.Select().Filter().OrderBy().Count().Expand().SetMaxTop(100).AddRouteComponents(
+			"odata", modelBuilder.GetEdmModel())
+	);
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -92,6 +104,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyMethod()
@@ -105,5 +118,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.Run();
