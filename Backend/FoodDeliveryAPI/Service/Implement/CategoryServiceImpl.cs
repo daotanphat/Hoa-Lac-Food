@@ -32,7 +32,7 @@ namespace FoodDeliveryAPI.Service.Implement
 		{
 			var category = await _categoryRepo.GetCategoryByIdAsync(id)
 				?? throw new EntityNotFoundException($"Category with {id} not found!");
-			if (category.Foods.Count() > 0) return false;
+			if (await _categoryRepo.IsCategoryHasFood(id)) return false;
 			await _categoryRepo.DeleteCategoryAsync(category);
 			return true;
 		}

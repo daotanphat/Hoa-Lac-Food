@@ -47,7 +47,6 @@ namespace FoodDeliveryAPI.Repository
 		{
 			var category = await _context.Categories
 				.Include(c => c.CreatedUser)
-				.Include(c => c.Foods)
 				.FirstOrDefaultAsync(c => c.Id == id);
 			if (category == null) throw new EntityNotFoundException("Category not found!");
 			return category;
@@ -79,6 +78,13 @@ namespace FoodDeliveryAPI.Repository
 			{
 				throw new Exception(ex.Message);
 			}
+		}
+
+		public async Task<bool> IsCategoryHasFood(int id)
+		{
+			return await _context.Foods
+				.Include(f => f.Category)
+				.AnyAsync(f => f.CategoryId == id);
 		}
 	}
 }
