@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects;
 using BusinessObjects.Dtos.Category.Request;
+using FoodDeliveryAPI.Exceptions;
 using FoodDeliveryAPI.Repository;
 
 namespace FoodDeliveryAPI.Service.Implement
@@ -25,6 +26,15 @@ namespace FoodDeliveryAPI.Service.Implement
 			var categoryCreated = await _categoryRepo.CreateCategoryAsync(category);
 			if (categoryCreated == null) throw new InvalidOperationException("Create category fail!");
 			return categoryCreated;
+		}
+
+		public async Task<bool> DeleteCategory(int id)
+		{
+			var category = await _categoryRepo.GetCategoryByIdAsync(id)
+				?? throw new EntityNotFoundException($"Category with {id} not found!");
+			if (category.Foods.Count() > 0) return false;
+			await _categoryRepo.DeleteCategoryAsync(category);
+			return true;
 		}
 
 		public async Task<List<Category>> GetAllCategories()

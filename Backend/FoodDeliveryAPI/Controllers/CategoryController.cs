@@ -74,5 +74,18 @@ namespace FoodDeliveryAPI.Controllers
 
 			return Ok(response);
 		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpDelete("{id:int:min(1)}")]
+		public async Task<IActionResult> DeleteCategory([FromRoute] int id)
+		{
+			var isDeleted = await _categoryService.DeleteCategory(id);
+			if (!isDeleted) return BadRequest("This category cannot be deleted!");
+			var response = new ResponseApiDto<bool>(
+				"success",
+				"Update category successfully",
+				true);
+			return Ok(response);
+		}
 	}
 }

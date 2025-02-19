@@ -8,5 +8,6 @@ namespace FoodDeliveryAPI.Service
 		Task<Category> CreateCategory(CreateCategoryRequestDto request, AppUser user);
 		Task<List<Category>> GetAllCategories();
 		Task<Category> UpdateCategory(int id, UpdateCategoryRequestDto request);
+		Task<bool> DeleteCategory(int id);
 	}
 }
