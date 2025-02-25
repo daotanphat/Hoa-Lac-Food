@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodDeliveryAPI.Repository
 {
@@ -22,6 +23,21 @@ namespace FoodDeliveryAPI.Repository
 			await _context.Carts.AddAsync(cart);
 			await _context.SaveChangesAsync();
 			return cart;
+		}
+
+		public async Task<Cart> GetCartByUserAsync(AppUser user)
+		{
+			return await _context.Users
+				.Where(u => u.Id == user.Id)
+				.Include(u => u.Cart)
+				.Select(u => u.Cart)
+				.SingleOrDefaultAsync();
+		}
+
+		public async Task UpdateCartAsync(Cart cart)
+		{
+			_context.Carts.Update(cart);
+			await _context.SaveChangesAsync();
 		}
 	}
 }

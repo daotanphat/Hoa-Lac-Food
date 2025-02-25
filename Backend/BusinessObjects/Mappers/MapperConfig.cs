@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Dtos.Auth.Response;
+using BusinessObjects.Dtos.Cart.Response;
 using BusinessObjects.Dtos.Category.Request;
 using BusinessObjects.Dtos.Category.Response;
 using BusinessObjects.Dtos.Food.Request;
@@ -42,6 +43,14 @@ namespace BusinessObjects.Mappers
 			CreateMap<Category, CategoryResponseDto>()
 				.ForMember(dest => dest.CreatedUser, opt => opt.MapFrom(src => src.CreatedUser.UserName))
 				.ReverseMap();
+
+			// Cart
+			CreateMap<Cart, CartResponseDto>()
+				.ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.UserName))
+				.ReverseMap();
+
+			// CartItem
+			CreateMap<CartItem, CartItemResponseDto>().ReverseMap();
 		}
 	}
 }
