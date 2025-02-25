@@ -288,6 +288,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-# Ignore appsettings.json files
-appsettings.json
-appsettings.*.json
+# Ignore all appsettings.json files in any project
+**/appsettings.json
+**/appsettings.*.json
