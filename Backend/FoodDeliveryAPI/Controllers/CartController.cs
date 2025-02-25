@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using BusinessObjects;
 using BusinessObjects.Dtos;
 using BusinessObjects.Dtos.Cart.Request;
 using BusinessObjects.Dtos.Cart.Response;
+using FoodDeliveryAPI.Helper;
 using FoodDeliveryAPI.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +24,28 @@ namespace FoodDeliveryAPI.Controllers
 			_userService = userService;
 		}
 
+		[Authorize]
+		[HttpGet]
+		public async Task<IActionResult> GetCartByUser([FromHeader(Name = "Authorization")] string header)
+		{
+			var token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+			var cart = await _cartService.GetCartByUser(user);
+			var response = new ResponseApiDto<CartResponseDto>(
+				"ok",
+				"Get cart successfully",
+				cart);
+			return Ok(response);
+		}
+
+		[Authorize]
 		[HttpPut("add/food")]
 		public async Task<IActionResult> AddFoodToCart([FromBody] AddFoodToCartRequestDto request,
 			[FromHeader(Name = "Authorization")] string header)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 
-			if (string.IsNullOrEmpty(header) || !header.StartsWith("Bearer "))
-				return Unauthorized("Invalid or missing authorization token!");
-			var token = header["Bearer ".Length..].Trim();
-
+			var token = TokenHelper.ExtractBearerToken(header);
 			var user = await _userService.GetUserFromToken(token);
 
 			var cart = await _cartService.AddFoodToCart(user, request.FoodId, request.Quantity);
@@ -38,6 +53,25 @@ namespace FoodDeliveryAPI.Controllers
 				"ok",
 				"Add food to cart successfully",
 				cart);
+			return Ok(response);
+		}
+
+		[Authorize]
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> RemoveCartItem([FromRoute] int id,
+			[FromHeader(Name = "Authorization")] string header)
+		{
+			var token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+
+			var status = await _cartService.RemoveCartItem(id, user);
+			if (status == false)
+				return BadRequest("You do not have permission to delete!");
+
+			var response = new ResponseApiDto<object>(
+				"ok",
+				"Remove cart item successfully",
+				null);
 			return Ok(response);
 		}
 	}

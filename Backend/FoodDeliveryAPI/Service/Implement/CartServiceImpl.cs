@@ -63,5 +63,31 @@ namespace FoodDeliveryAPI.Service.Implement
 		{
 			return await _cartRepo.CreateCart(user);
 		}
+
+		public async Task<CartResponseDto> GetCartByUser(AppUser user)
+		{
+			var cart = await _cartRepo.GetCartByUserAsync(user);
+			var cartResponse = _mapper.Map<CartResponseDto>(cart);
+			return cartResponse;
+		}
+
+		public async Task<bool> RemoveCartItem(int cartItemId, AppUser user)
+		{
+			var cart = await _cartRepo.GetCartByUserAsync(user);
+			if (cart.CartItems.Any(c => c.Id == cartItemId))
+			{
+				var cartItem = await _cartItemRepo.GetCartItemById(cartItemId);
+				if (cartItem == null) throw new EntityNotFoundException("Not found this item!");
+				await _cartItemRepo.DeleteCartItemAsync(cartItem);
+
+				cart.Total -= cartItem.Quantity;
+				await _cartRepo.UpdateCartAsync(cart);
+			}
+			else
+			{
+				return false;
+			}
+			return true;
+		}
 	}
 }

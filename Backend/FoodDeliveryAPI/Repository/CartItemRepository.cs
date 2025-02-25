@@ -11,6 +11,9 @@ namespace FoodDeliveryAPI.Repository
 			_context = context;
 		}
 
+		public async Task<CartItem> GetCartItemById(int cartItemId)
+			=> await _context.CartItems.SingleOrDefaultAsync(c => c.Id == cartItemId);
+
 		public async Task<CartItem> GetByCartAndFoodAsync(int cartId, int foodId)
 		{
 			return await _context.CartItems
@@ -29,6 +32,19 @@ namespace FoodDeliveryAPI.Repository
 			_context.CartItems.Update(cartItem);
 			await _context.SaveChangesAsync();
 			return cartItem;
+		}
+
+		public async Task DeleteCartItemAsync(CartItem cartItem)
+		{
+			try
+			{
+				_context.CartItems.Remove(cartItem);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Error deleteing cart item: {ex.Message}");
+			}
 		}
 	}
 }
