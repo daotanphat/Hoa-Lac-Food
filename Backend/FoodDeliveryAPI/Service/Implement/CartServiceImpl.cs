@@ -9,12 +9,14 @@ namespace FoodDeliveryAPI.Service.Implement
 	public class CartServiceImpl : ICartService
 	{
 		private readonly CartRepository _cartRepo;
+		private readonly CartItemRepository _cartItemRepo;
 		private readonly FoodRepository _foodRepo;
 		private readonly IMapper _mapper;
-		public CartServiceImpl(CartRepository cartRepo, FoodRepository foodRepo,
-			IMapper mapper)
+		public CartServiceImpl(CartRepository cartRepo, CartItemRepository cartItemRepo,
+			FoodRepository foodRepo, IMapper mapper)
 		{
 			_cartRepo = cartRepo;
+			_cartItemRepo = cartItemRepo;
 			_foodRepo = foodRepo;
 			_mapper = mapper;
 		}
@@ -31,16 +33,27 @@ namespace FoodDeliveryAPI.Service.Implement
 			cart.Customer = user;
 			cart.Total += quantity;
 
-			var cartItem = new CartItem
+			var isFoodExistInCart = await _cartItemRepo.GetByCartAndFoodAsync(cart.Id, foodId);
+			var cartItem = new CartItem();
+			if (isFoodExistInCart != null)
 			{
-				CartId = cart.Id,
-				Cart = cart,
-				FoodId = food.Id,
-				Food = food,
-				Quantity = quantity,
-				Price = food.Price
-			};
-			cart.CartItems.Add(cartItem);
+				isFoodExistInCart.Quantity += quantity;
+				await _cartItemRepo.UpdateCartItemAsync(isFoodExistInCart);
+			}
+			else
+			{
+				cartItem = new CartItem
+				{
+					CartId = cart.Id,
+					Cart = cart,
+					FoodId = food.Id,
+					Food = food,
+					Quantity = quantity,
+					Price = food.Price
+				};
+				cart.CartItems.Add(cartItem);
+			}
+
 			await _cartRepo.UpdateCartAsync(cart);
 
 			return _mapper.Map<CartResponseDto>(cart); ;

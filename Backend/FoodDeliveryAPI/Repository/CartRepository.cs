@@ -29,7 +29,8 @@ namespace FoodDeliveryAPI.Repository
 		{
 			return await _context.Users
 				.Where(u => u.Id == user.Id)
-				.Include(u => u.Cart)
+				.Include(u => u.Cart.CartItems)
+					.ThenInclude(ci => ci.Food)
 				.Select(u => u.Cart)
 				.SingleOrDefaultAsync();
 		}

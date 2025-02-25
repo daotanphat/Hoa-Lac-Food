@@ -94,6 +94,7 @@ builder.Services.AddScoped<CartRepository>();
 builder.Services.AddScoped<ShopRepository>();
 builder.Services.AddScoped<FoodRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<CartItemRepository>();
 
 var app = builder.Build();
 
