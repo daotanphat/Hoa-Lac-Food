@@ -9,5 +9,6 @@ namespace FoodDeliveryAPI.Service
 		Task<Food> UpdateFoodStatus(int id);
 		Task<Food> GetFoodDetails(int id);
 		IQueryable<Food> GetAllFoodByShop(int shopId);
+		IQueryable<Food> GetAllFood();
 	}
 }

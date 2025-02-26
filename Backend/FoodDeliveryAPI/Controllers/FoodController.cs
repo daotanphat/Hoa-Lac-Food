@@ -86,5 +86,15 @@ namespace FoodDeliveryAPI.Controllers
 			var foodResponse = _mapper.Map<IEnumerable<FoodResponseDto>>(foods);
 			return Ok(foodResponse);
 		}
+
+		[EnableQuery]
+		[HttpGet("/odata/Food")]
+		public IActionResult GetAllFood()
+		{
+			var foods = _foodService.GetAllFood();
+			if (foods == null) return NotFound();
+			var foodResponse = _mapper.Map<IEnumerable<FoodResponseDto>>(foods);
+			return Ok(foodResponse);
+		}
 	}
 }

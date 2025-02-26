@@ -44,6 +44,11 @@ namespace FoodDeliveryAPI.Service.Implement
 			return food;
 		}
 
+		public IQueryable<Food> GetAllFood()
+		{
+			return _foodRepo.GetAllFoodAsync();
+		}
+
 		public IQueryable<Food> GetAllFoodByShop(int shopId)
 		{
 			return _foodRepo.GetAllFoodByShopAsync(shopId);
