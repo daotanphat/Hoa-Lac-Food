@@ -56,12 +56,46 @@ namespace FoodDeliveryAPI.Service.Implement
 
 			await _cartRepo.UpdateCartAsync(cart);
 
-			return _mapper.Map<CartResponseDto>(cart); ;
+			return _mapper.Map<CartResponseDto>(cart);
 		}
 
 		public async Task<Cart> CreateCart(AppUser user)
 		{
 			return await _cartRepo.CreateCart(user);
+		}
+
+		public async Task<CartResponseDto> DecreaseItemInCart(AppUser user, int foodId, int quantity)
+		{
+			var cart = await _cartRepo.GetCartByUserAsync(user);
+			if (cart == null) throw new EntityNotFoundException("Cart not found!");
+
+			var food = await _foodRepo.GetFoodByIdAsync(foodId);
+			if (food == null) throw new EntityNotFoundException("Food not found!");
+
+			var isFoodExistInCart = await _cartItemRepo.GetByCartAndFoodAsync(cart.Id, foodId);
+			if (isFoodExistInCart != null)
+			{
+				isFoodExistInCart.Quantity -= quantity;
+				if (isFoodExistInCart.Quantity <= 0)
+				{
+					await _cartItemRepo.DeleteCartItemAsync(isFoodExistInCart);
+					cart.CartItems.Remove(isFoodExistInCart);
+				}
+				else
+				{
+					await _cartItemRepo.UpdateCartItemAsync(isFoodExistInCart);
+				}
+
+				cart.Total -= quantity;
+				if (cart.Total < 0) cart.Total = 0;
+				await _cartRepo.UpdateCartAsync(cart);
+			}
+			else
+			{
+				throw new ArgumentException("Food is not exist in cart!");
+			}
+
+			return _mapper.Map<CartResponseDto>(cart); ;
 		}
 
 		public async Task<CartResponseDto> GetCartByUser(AppUser user)

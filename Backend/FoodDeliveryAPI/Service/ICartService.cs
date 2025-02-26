@@ -7,6 +7,7 @@ namespace FoodDeliveryAPI.Service
 	{
 		Task<Cart> CreateCart(AppUser user);
 		Task<CartResponseDto> AddFoodToCart(AppUser user, int foodId, int quantity);
+		Task<CartResponseDto> DecreaseItemInCart(AppUser user, int foodId, int quantity);
 		Task<CartResponseDto> GetCartByUser(AppUser user);
 		Task<bool> RemoveCartItem(int cartItemId, AppUser user);
 	}

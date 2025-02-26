@@ -57,7 +57,7 @@ namespace FoodDeliveryAPI.Controllers
 		}
 
 		[Authorize]
-		[HttpDelete("{id}")]
+		[HttpDelete("{id:int:min(1)}")]
 		public async Task<IActionResult> RemoveCartItem([FromRoute] int id,
 			[FromHeader(Name = "Authorization")] string header)
 		{
@@ -72,6 +72,25 @@ namespace FoodDeliveryAPI.Controllers
 				"ok",
 				"Remove cart item successfully",
 				null);
+			return Ok(response);
+		}
+
+		[Authorize]
+		[HttpPut]
+		public async Task<IActionResult> DecreaseItemCartItem([FromBody] DecreaseNumItemRequestDto request,
+			[FromHeader(Name = "Authorization")] string header)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			var token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+
+			var cart = await _cartService.DecreaseItemInCart(user, request.FoodId, request.Quantity);
+
+			var response = new ResponseApiDto<CartResponseDto>(
+				"ok",
+				"Remove cart item successfully",
+				cart);
 			return Ok(response);
 		}
 	}
