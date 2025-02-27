@@ -15,17 +15,19 @@ namespace FoodDeliveryAPI.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly UserManager<AppUser> _userManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly IMapper _mapper;
 		private readonly IAuthService _authService;
 		private readonly ICartService _cartService;
 
 		public AuthController(UserManager<AppUser> userManager, IMapper mapper,
-			IAuthService authService, ICartService cartService)
+			IAuthService authService, ICartService cartService, RoleManager<IdentityRole> roleManager)
 		{
 			_userManager = userManager;
 			_mapper = mapper;
 			_authService = authService;
 			_cartService = cartService;
+			_roleManager = roleManager;
 		}
 
 		[HttpPost("register")]
@@ -34,6 +36,16 @@ namespace FoodDeliveryAPI.Controllers
 			try
 			{
 				if (!ModelState.IsValid) return BadRequest(ModelState);
+
+				var roleExists = await _roleManager.RoleExistsAsync(request.Role);
+				if (!roleExists)
+				{
+					return BadRequest(new ResponseApiDto<object>(
+						"fail",
+						"Role does not exist!",
+						null)
+					);
+				}
 
 				var appUser = new AppUser
 				{
