@@ -9,6 +9,7 @@ namespace BusinessObjects.Dtos.Food.Response
 {
 	public class FoodResponseDto
 	{
+		public int Id { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public decimal Price { get; set; }
 		public string Image { get; set; } = string.Empty;

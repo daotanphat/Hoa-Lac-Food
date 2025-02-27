@@ -3,6 +3,7 @@ using BusinessObjects;
 using BusinessObjects.Dtos;
 using BusinessObjects.Dtos.Food.Request;
 using BusinessObjects.Dtos.Food.Response;
+using FoodDeliveryAPI.Helper;
 using FoodDeliveryAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -62,6 +63,37 @@ namespace FoodDeliveryAPI.Controllers
 				foodResponse);
 
 			return Ok(response);
+		}
+
+		[Authorize(Roles = "Shop")]
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateFood([FromRoute] int id, [FromForm] UpdateFoodRequestDto request,
+			[FromHeader(Name = "Authorization")] string header)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			var token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+
+			var food = await _foodService.UpdateFood(id, request, user);
+			ResponseApiDto<object> response;
+			if (food == null)
+			{
+				response = new ResponseApiDto<object>(
+					"fail",
+					"You did not update anything!",
+					null
+				);
+				return Ok(response);
+			}
+
+			var successResponse = new ResponseApiDto<FoodResponseDto>(
+				"success",
+				"Update food successfully!",
+				food
+			);
+
+			return Ok(successResponse);
 		}
 
 		[HttpGet("{id:int:min(1)}")]

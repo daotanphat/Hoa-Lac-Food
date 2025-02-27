@@ -1,5 +1,6 @@
 ﻿using BusinessObjects;
 using BusinessObjects.Dtos.Food.Request;
+using BusinessObjects.Dtos.Food.Response;
 
 namespace FoodDeliveryAPI.Service
 {
@@ -10,5 +11,6 @@ namespace FoodDeliveryAPI.Service
 		Task<Food> GetFoodDetails(int id);
 		IQueryable<Food> GetAllFoodByShop(int shopId);
 		IQueryable<Food> GetAllFood();
+		Task<FoodResponseDto> UpdateFood(int id, UpdateFoodRequestDto request, AppUser user);
 	}
 }

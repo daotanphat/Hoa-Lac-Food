@@ -21,7 +21,7 @@ namespace FoodDeliveryAPI.Repository
 		public async Task<bool> IsFoodExist(string foodName, int shopId)
 		{
 			var foodByShop = await _context.Foods.Where(f => f.ShopId == shopId).ToListAsync();
-			return foodByShop.Any(f => f.Name == foodName);
+			return foodByShop.Any(f => f.Name.Trim() == foodName.Trim());
 		}
 
 		public async Task<Food> GetFoodByIdAsync(int id)
@@ -32,13 +32,19 @@ namespace FoodDeliveryAPI.Repository
 				.SingleOrDefaultAsync(f => f.Id == id);
 		}
 
-		public async Task<Food> UpdateFood(Food food)
+		public async Task<Food> UpdateFoodAsync(Food food)
 		{
 			try
 			{
-				_context.Foods.Update(food);
-				await _context.SaveChangesAsync();
+				var entry = _context.Entry(food);
+				entry.Property(f => f.Name).IsModified = true;
+				entry.Property(f => f.Price).IsModified = true;
+				entry.Property(f => f.Image).IsModified = true;
+				entry.Property(f => f.Quantity).IsModified = true;
+				entry.Property(f => f.CategoryId).IsModified = true;
+				entry.Property(f => f.Available).IsModified = true;
 
+				await _context.SaveChangesAsync();
 				return food;
 			}
 			catch (Exception ex)
