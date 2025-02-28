@@ -10,5 +10,6 @@ namespace FoodDeliveryAPI.Service
 		Task<bool> IsShopNameUnique(string name);
 		Task<Shop> UpdateShopStatement(string shopName);
 		Task<ShopResponseDto> UpdateShop(AppUser user, UpdateShopRequestDto request);
+		Task<ShopResponseDto> UpdateShopStatus(int shopId);
 	}
 }

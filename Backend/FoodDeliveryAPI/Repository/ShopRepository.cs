@@ -16,6 +16,11 @@ namespace FoodDeliveryAPI.Repository
 			return await _context.Shops.FirstOrDefaultAsync(s => s.Name == name);
 		}
 
+		public async Task<Shop> GetShopByIdAsync(int shopId)
+		{
+			return await _context.Shops.FirstOrDefaultAsync(s => s.Id == shopId);
+		}
+
 		public async Task<Shop> UpdateShopAsync(Shop shop)
 		{
 			var entry = _context.Entry(shop);
@@ -24,6 +29,8 @@ namespace FoodDeliveryAPI.Repository
 			entry.Property(x => x.Address).IsModified = true;
 			entry.Property(x => x.Bank).IsModified = true;
 			entry.Property(x => x.Image).IsModified = true;
+			entry.Property(x => x.IsOpen).IsModified = true;
+			entry.Property(x => x.Status).IsModified = true;
 
 			await _context.SaveChangesAsync();
 			return shop;

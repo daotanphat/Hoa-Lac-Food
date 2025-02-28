@@ -89,10 +89,20 @@ namespace FoodDeliveryAPI.Service.Implement
 			if (shop == null) throw new EntityNotFoundException("Shop not found!");
 
 			shop.IsOpen = !shop.IsOpen;
-			_context.Shops.Update(shop);
-			await _context.SaveChangesAsync();
-
+			await _shopRepo.UpdateShopAsync(shop);
 			return shop;
+		}
+
+		public async Task<ShopResponseDto> UpdateShopStatus(int shopId)
+		{
+			var shop = await _shopRepo.GetShopByIdAsync(shopId);
+			if (shop == null) throw new EntityNotFoundException("Shop not found!");
+
+			shop.Status = !shop.Status;
+			await _shopRepo.UpdateShopAsync(shop);
+
+			var response = _mapper.Map<ShopResponseDto>(shop);
+			return response;
 		}
 	}
 }

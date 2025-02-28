@@ -66,6 +66,19 @@ namespace FoodDeliveryAPI.Controllers
 			return Ok(response);
 		}
 
+		[Authorize(Roles = "Admin")]
+		[HttpPut("{shopId:int:min(1)}/update-status")]
+		public async Task<IActionResult> UpdateShopStatus([FromRoute] int shopId)
+		{
+			var shop = await _shopService.UpdateShopStatus(shopId);
+			var response = new ResponseApiDto<ShopResponseDto>(
+				"Success",
+				"Update status of shop successfully!",
+				shop);
+
+			return Ok(response);
+		}
+
 		[Authorize(Roles = "Shop")]
 		[HttpPut]
 		public async Task<IActionResult> UpdateShop([FromForm] UpdateShopRequestDto request,
