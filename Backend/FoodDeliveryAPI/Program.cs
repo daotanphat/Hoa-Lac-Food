@@ -23,6 +23,7 @@ builder.Services.AddSingleton(mapper);
 // using Odata
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Food>("Food");
+modelBuilder.EntitySet<Shop>("Shop");
 
 // Add services to the container.
 builder.Services.AddControllers();

@@ -41,6 +41,13 @@ namespace FoodDeliveryAPI.Service.Implement
 			return shopCreated;
 		}
 
+		public IQueryable<ShopResponseDto> GetShopList()
+		{
+			var shops = _shopRepo.GetShops();
+			var response = _mapper.Map<IEnumerable<ShopResponseDto>>(shops);
+			return response.AsQueryable();
+		}
+
 		public async Task<bool> IsShopNameUnique(string name)
 		{
 			return !await _context.Shops.AnyAsync(s => s.Name == name);

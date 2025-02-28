@@ -11,6 +11,11 @@ namespace FoodDeliveryAPI.Repository
 			_context = context;
 		}
 
+		public IQueryable<Shop> GetShops()
+		{
+			return _context.Shops;
+		}
+
 		public async Task<Shop> GetShopByName(string name)
 		{
 			return await _context.Shops.FirstOrDefaultAsync(s => s.Name == name);

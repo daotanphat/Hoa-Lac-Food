@@ -7,6 +7,7 @@ using FoodDeliveryAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace FoodDeliveryAPI.Controllers
 {
@@ -23,6 +24,14 @@ namespace FoodDeliveryAPI.Controllers
 			_shopService = shopService;
 			_userService = userService;
 			_mapper = mapper;
+		}
+
+		[EnableQuery]
+		[HttpGet("/odata/shop")]
+		public async Task<IActionResult> GetShops()
+		{
+			var shops = _shopService.GetShopList();
+			return Ok(shops);
 		}
 
 		[Authorize(Roles = "Shop")]
