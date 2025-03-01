@@ -1,12 +1,14 @@
 ﻿using BusinessObjects;
 using BusinessObjects.Dtos;
-using BusinessObjects.Dtos.Order;
+using BusinessObjects.Dtos.Order.Request;
+using BusinessObjects.Dtos.Order.Response;
 using FoodDeliveryAPI.Helper;
 using FoodDeliveryAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace FoodDeliveryAPI.Controllers
 {
@@ -32,6 +34,18 @@ namespace FoodDeliveryAPI.Controllers
 
 			await _orderService.CreateOrder(user, request);
 			return Ok(new ResponseApiDto<object>("success", "Create order successfully!", null));
+		}
+
+		[EnableQuery]
+		[Authorize]
+		[HttpGet("/odata/order/customer")]
+		public async Task<IActionResult> GetOrdersByCustomer([FromHeader(Name = "Authorization")] string header)
+		{
+			var token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+
+			var orders = _orderService.GetOrdersByUser(user);
+			return Ok(orders);
 		}
 	}
 }

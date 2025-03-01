@@ -1,5 +1,7 @@
-﻿using BusinessObjects;
-using BusinessObjects.Dtos.Order;
+﻿using AutoMapper;
+using BusinessObjects;
+using BusinessObjects.Dtos.Order.Request;
+using BusinessObjects.Dtos.Order.Response;
 using FoodDeliveryAPI.Exceptions;
 using FoodDeliveryAPI.Repository;
 using static BusinessObjects.Enums.OrderEnums;
@@ -13,15 +15,17 @@ namespace FoodDeliveryAPI.Service.Implement
 		private readonly CartItemRepository _cartItemRepo;
 		private readonly ApplicationDBContext _context;
 		private readonly ShopRepository _shopRepo;
+		private readonly IMapper _mapper;
 		public OrderServiceImpl(OrderRepository orderRepo, CartRepository cartRepo,
 			CartItemRepository cartItemRepo, ApplicationDBContext context,
-			ShopRepository shopRepo)
+			ShopRepository shopRepo, IMapper mapper)
 		{
 			_orderRepo = orderRepo;
 			_cartRepo = cartRepo;
 			_cartItemRepo = cartItemRepo;
 			_context = context;
 			_shopRepo = shopRepo;
+			_mapper = mapper;
 		}
 		public async Task CreateOrder(AppUser user, CreateOrderRequestDto request)
 		{
@@ -95,6 +99,13 @@ namespace FoodDeliveryAPI.Service.Implement
 				await transaction.RollbackAsync();
 				throw;
 			}
+		}
+
+		public IQueryable<OrderResponseDto> GetOrdersByUser(AppUser user)
+		{
+			var orders = _orderRepo.GetOrdersByUser(user);
+			var response = _mapper.Map<IEnumerable<OrderResponseDto>>(orders);
+			return response.AsQueryable();
 		}
 	}
 }

@@ -5,8 +5,11 @@ using BusinessObjects.Dtos.Category.Request;
 using BusinessObjects.Dtos.Category.Response;
 using BusinessObjects.Dtos.Food.Request;
 using BusinessObjects.Dtos.Food.Response;
+using BusinessObjects.Dtos.Order.Request;
+using BusinessObjects.Dtos.Order.Response;
 using BusinessObjects.Dtos.Shop.Request;
 using BusinessObjects.Dtos.Shop.Response;
+using BusinessObjects.Dtos.User.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +24,9 @@ namespace BusinessObjects.Mappers
 		{
 			// AppUser
 			CreateMap<AppUser, RegisterResponseDto>().ReverseMap();
+
+			// User
+			CreateMap<AppUser, UserResponseDto>().ReverseMap();
 
 			// Shop
 			CreateMap<CreateShopRequestDto, Shop>()
@@ -51,6 +57,14 @@ namespace BusinessObjects.Mappers
 
 			// CartItem
 			CreateMap<CartItem, CartItemResponseDto>().ReverseMap();
+
+			// Order
+			CreateMap<Order, OrderResponseDto>()
+				.ForMember(dest => dest.ShopName, opt => opt.MapFrom(src => src.Shop.Name))
+				.ReverseMap();
+
+			// OrderItem
+			CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
 		}
 	}
 }
