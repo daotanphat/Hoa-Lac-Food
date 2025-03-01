@@ -116,6 +116,14 @@ namespace BusinessObjects
 				.IsRequired()
 				.OnDelete(DeleteBehavior.NoAction);
 
+			builder.Entity<Order>()
+				.Property(o => o.PaymentStatus)
+				.HasConversion<string>();
+
+			builder.Entity<Order>()
+				.Property(o => o.Status)
+				.HasConversion<string>();
+
 			builder.Entity<Cart>()
 				.HasMany(c => c.CartItems)
 				.WithOne(c => c.Cart)
