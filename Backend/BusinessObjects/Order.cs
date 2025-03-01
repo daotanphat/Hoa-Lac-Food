@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BusinessObjects.Enums.OrderEnums;
 
 namespace BusinessObjects
 {
@@ -20,8 +21,8 @@ namespace BusinessObjects
 		public AppUser? Customer { get; set; }
 
 		public DateTime CreateAt { get; set; } = DateTime.Now;
-		public string PaymentStatus { get; set; } = string.Empty;
-		public string Status { get; set; } = string.Empty;
+		public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
+		public OrderStatus Status { get; set; } = OrderStatus.Processing;
 
 		public int ShopId { get; set; }
 		public Shop Shop { get; set; } = null!;

@@ -88,12 +88,14 @@ builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IShopService, ShopServiceImpl>();
 builder.Services.AddScoped<IFoodService, FoodServiceImpl>();
+builder.Services.AddScoped<IOrderService, OrderServiceImpl>();
 builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
 builder.Services.AddScoped<ICartService, CartServiceImpl>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryServiceImpl>();
 builder.Services.AddScoped<CartRepository>();
 builder.Services.AddScoped<ShopRepository>();
 builder.Services.AddScoped<FoodRepository>();
+builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<CartItemRepository>();
 

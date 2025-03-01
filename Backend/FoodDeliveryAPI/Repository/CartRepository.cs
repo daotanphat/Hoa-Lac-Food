@@ -31,6 +31,10 @@ namespace FoodDeliveryAPI.Repository
 				.Where(u => u.Id == user.Id)
 				.Include(u => u.Cart.CartItems)
 					.ThenInclude(ci => ci.Food)
+						.ThenInclude(f => f.Category)
+				.Include(u => u.Cart.CartItems)
+				.ThenInclude(ci => ci.Food)
+						.ThenInclude(f => f.Shop)
 				.Select(u => u.Cart)
 				.SingleOrDefaultAsync();
 		}
