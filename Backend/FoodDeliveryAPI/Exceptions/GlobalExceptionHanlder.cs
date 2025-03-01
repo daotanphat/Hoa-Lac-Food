@@ -16,6 +16,7 @@ namespace FoodDeliveryAPI.Exceptions
 				ArgumentException => (StatusCodes.Status400BadRequest, exception.Message),
 				ForbiddenException => (StatusCodes.Status403Forbidden, exception.Message),
 				UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, exception.Message),
+				InsufficientStockException => (StatusCodes.Status400BadRequest, exception.Message),
 				_ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
 			};
 
