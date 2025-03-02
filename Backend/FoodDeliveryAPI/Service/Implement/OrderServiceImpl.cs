@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BusinessObjects;
 using BusinessObjects.Dtos.Order.Request;
 using BusinessObjects.Dtos.Order.Response;
@@ -108,6 +109,16 @@ namespace FoodDeliveryAPI.Service.Implement
 		{
 			var orderItems = await _orderItemRepo.GetOrderIemsByOrderIdAsync(orderId);
 			var response = _mapper.Map<IEnumerable<OrderItemResponseDto>>(orderItems);
+			return response;
+		}
+
+		public IQueryable<OrderResponseDto> GetOrdersByShop(AppUser user)
+		{
+			var shop = _shopRepo.GetShopByUser(user).Result;
+			if (shop == null) throw new EntityNotFoundException("Shop not found");
+
+			var orders = _orderRepo.GetOrdersByShop(shop.Id);
+			var response = orders.ProjectTo<OrderResponseDto>(_mapper.ConfigurationProvider);
 			return response;
 		}
 

@@ -14,11 +14,11 @@ namespace FoodDeliveryAPI.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class OrderController : ControllerBase
+	public class OrderController : BaseController
 	{
 		private readonly IUserService _userService;
 		private readonly IOrderService _orderService;
-		public OrderController(IUserService userService, IOrderService orderService)
+		public OrderController(IUserService userService, IOrderService orderService) : base(userService)
 		{
 			_userService = userService;
 			_orderService = orderService;
@@ -45,6 +45,16 @@ namespace FoodDeliveryAPI.Controllers
 			var user = await _userService.GetUserFromToken(token);
 
 			var orders = _orderService.GetOrdersByUser(user);
+			return Ok(orders);
+		}
+
+		[EnableQuery]
+		[Authorize(Roles = "Shop")]
+		[HttpGet("/odata/order/shop")]
+		public async Task<IActionResult> GetOrdersByShop([FromHeader(Name = "Authorization")] string header)
+		{
+			var user = await GetAuthenticatedUser(header);
+			var orders = _orderService.GetOrdersByShop(user);
 			return Ok(orders);
 		}
 

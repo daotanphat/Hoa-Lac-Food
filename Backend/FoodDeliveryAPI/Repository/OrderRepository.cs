@@ -28,5 +28,16 @@ namespace FoodDeliveryAPI.Repository
 				.ThenInclude(oi => oi.Food)
 				.Where(o => o.CustomerId == user.Id);
 		}
+
+		public IQueryable<Order> GetOrdersByShop(int shopId)
+		{
+			return _context.Orders
+				.AsNoTracking()
+				.Include(o => o.Customer)
+				.Include(o => o.Shop)
+				.Include(o => o.OrderItems)
+					.ThenInclude(oi => oi.Food)
+				.Where(o => o.ShopId == shopId);
+		}
 	}
 }
