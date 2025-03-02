@@ -47,5 +47,17 @@ namespace FoodDeliveryAPI.Controllers
 			var orders = _orderService.GetOrdersByUser(user);
 			return Ok(orders);
 		}
+
+		[Authorize]
+		[HttpGet("{orderId}/details")]
+		public async Task<IActionResult> GetOrderItemsOfOrder([FromRoute] string orderId)
+		{
+			var orderItems = await _orderService.GetOrderItemsOfOrder(orderId);
+			var response = new ResponseApiDto<IEnumerable<OrderItemResponseDto>>(
+				"success",
+				"Get order details successfully!",
+				orderItems);
+			return Ok(response);
+		}
 	}
 }

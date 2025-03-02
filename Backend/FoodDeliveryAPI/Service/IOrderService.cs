@@ -8,5 +8,6 @@ namespace FoodDeliveryAPI.Service
 	{
 		Task CreateOrder(AppUser user, CreateOrderRequestDto request);
 		IQueryable<OrderResponseDto> GetOrdersByUser(AppUser user);
+		Task<IEnumerable<OrderItemResponseDto>> GetOrderItemsOfOrder(string orderId);
 	}
 }

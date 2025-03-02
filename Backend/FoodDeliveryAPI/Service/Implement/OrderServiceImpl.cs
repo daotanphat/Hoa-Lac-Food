@@ -16,9 +16,11 @@ namespace FoodDeliveryAPI.Service.Implement
 		private readonly ApplicationDBContext _context;
 		private readonly ShopRepository _shopRepo;
 		private readonly IMapper _mapper;
+		private readonly OrderItemRepository _orderItemRepo;
 		public OrderServiceImpl(OrderRepository orderRepo, CartRepository cartRepo,
 			CartItemRepository cartItemRepo, ApplicationDBContext context,
-			ShopRepository shopRepo, IMapper mapper)
+			ShopRepository shopRepo, IMapper mapper,
+			OrderItemRepository orderItemRepo)
 		{
 			_orderRepo = orderRepo;
 			_cartRepo = cartRepo;
@@ -26,6 +28,7 @@ namespace FoodDeliveryAPI.Service.Implement
 			_context = context;
 			_shopRepo = shopRepo;
 			_mapper = mapper;
+			_orderItemRepo = orderItemRepo;
 		}
 		public async Task CreateOrder(AppUser user, CreateOrderRequestDto request)
 		{
@@ -99,6 +102,13 @@ namespace FoodDeliveryAPI.Service.Implement
 				await transaction.RollbackAsync();
 				throw;
 			}
+		}
+
+		public async Task<IEnumerable<OrderItemResponseDto>> GetOrderItemsOfOrder(string orderId)
+		{
+			var orderItems = await _orderItemRepo.GetOrderIemsByOrderIdAsync(orderId);
+			var response = _mapper.Map<IEnumerable<OrderItemResponseDto>>(orderItems);
+			return response;
 		}
 
 		public IQueryable<OrderResponseDto> GetOrdersByUser(AppUser user)
