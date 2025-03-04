@@ -69,5 +69,52 @@ namespace FoodDeliveryAPI.Controllers
 				orderItems);
 			return Ok(response);
 		}
+
+		[Authorize(Roles = "Shop")]
+		[HttpPut("{orderId}/update-status")]
+		public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId,
+			[FromBody] UpdateOrderStatusRequest request,
+			[FromHeader(Name = "Authorization")] string header)
+		{
+			var user = await GetAuthenticatedUser(header);
+			var status = await _orderService.UpdateOrderStatus(user, orderId, request);
+			if (status)
+			{
+				return Ok(new ResponseApiDto<object>(
+					"success",
+					"Update order status successfully!",
+					null));
+			}
+			else
+			{
+				return BadRequest(new ResponseApiDto<string>(
+					"fail",
+					"Update order status failed!",
+					"Order status can only be updated if payment is completed and order status is not delivered or canceled"));
+			}
+		}
+
+		[Authorize]
+		[HttpPut("{orderId}/cancel")]
+		public async Task<IActionResult> CancelOrder([FromRoute] string orderId,
+			[FromHeader(Name = "Authorization")] string header)
+		{
+			var user = await GetAuthenticatedUser(header);
+			var status = await _orderService.CancelOrder(user, orderId);
+			if (status)
+			{
+				return Ok(new ResponseApiDto<object>(
+					"success",
+					"Cancel order successfully!",
+					null));
+			}
+			else
+			{
+				return BadRequest(new ResponseApiDto<string>(
+					"fail",
+					"Cancel order failed!",
+					"Order can only be cancel if payment is not paid."));
+			}
+		}
 	}
 }

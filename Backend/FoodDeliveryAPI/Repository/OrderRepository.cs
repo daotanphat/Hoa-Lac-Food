@@ -39,5 +39,18 @@ namespace FoodDeliveryAPI.Repository
 					.ThenInclude(oi => oi.Food)
 				.Where(o => o.ShopId == shopId);
 		}
+
+		public async Task<Order> GetOrdersByIdAsync(string orderId)
+		{
+			return await _context.Orders
+				.Include(o => o.Customer)
+				.SingleOrDefaultAsync(o => o.OrderId == orderId);
+		}
+
+		public async Task<bool> IsOrderExistInShop(string orderId, int shopId)
+		{
+			return await _context.Orders
+				.AnyAsync(o => o.OrderId == orderId && o.ShopId == shopId);
+		}
 	}
 }

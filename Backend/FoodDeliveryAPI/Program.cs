@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,10 +40,15 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddControllers().AddOData(options =>
-	options.Select().Filter().OrderBy().Count().Expand().SetMaxTop(100).AddRouteComponents(
-			"odata", modelBuilder.GetEdmModel())
-	);
+builder.Services.AddControllers()
+	.AddOData(options =>
+		options.Select().Filter().OrderBy().Count().Expand().SetMaxTop(100).AddRouteComponents(
+				"odata", modelBuilder.GetEdmModel())
+		)
+	.AddJsonOptions(options =>
+	{
+		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

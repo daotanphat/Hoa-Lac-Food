@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Azure.Core;
 using BusinessObjects;
 using BusinessObjects.Dtos.Order.Request;
 using BusinessObjects.Dtos.Order.Response;
@@ -31,6 +32,33 @@ namespace FoodDeliveryAPI.Service.Implement
 			_mapper = mapper;
 			_orderItemRepo = orderItemRepo;
 		}
+
+		public async Task<bool> CancelOrder(AppUser user, string orderId)
+		{
+			var order = await _orderRepo.GetOrdersByIdAsync(orderId);
+			if (order == null) throw new EntityNotFoundException("Order not found");
+
+			// check whether order is belong to user or not
+			if (order.CustomerId != user.Id) throw new ForbiddenException("Order does not belong to user");
+
+			if (order.PaymentStatus == PaymentStatus.Paid) return false;
+			if (order.Status == OrderStatus.Canceled) throw new ArgumentException("Order is already canceled");
+
+			using var transaction = await _context.Database.BeginTransactionAsync();
+			try
+			{
+				order.Status = OrderStatus.Canceled;
+				await _context.SaveChangesAsync();
+				await transaction.CommitAsync();
+				return true;
+			}
+			catch
+			{
+				await transaction.RollbackAsync();
+				throw;
+			}
+		}
+
 		public async Task CreateOrder(AppUser user, CreateOrderRequestDto request)
 		{
 			using var transaction = await _context.Database.BeginTransactionAsync();
@@ -127,6 +155,38 @@ namespace FoodDeliveryAPI.Service.Implement
 			var orders = _orderRepo.GetOrdersByUser(user);
 			var response = _mapper.Map<IEnumerable<OrderResponseDto>>(orders);
 			return response.AsQueryable();
+		}
+
+		public async Task<bool> UpdateOrderStatus(AppUser user, string orderId, UpdateOrderStatusRequest request)
+		{
+			var order = await _orderRepo.GetOrdersByIdAsync(orderId);
+			if (order == null) throw new EntityNotFoundException("Order not found");
+
+			var shop = await _shopRepo.GetShopByUser(user);
+			if (shop == null) throw new EntityNotFoundException("Shop not found");
+
+			// check whether order is exist in shop or not
+			var isOrderExistInShop = await _orderRepo.IsOrderExistInShop(orderId, shop.Id);
+			if (!isOrderExistInShop) throw new ForbiddenException("Order not belong to this shop");
+
+			if (order.PaymentStatus != PaymentStatus.Paid)
+				throw new ArgumentException("Order status can only be updated if payment is completed");
+			if (order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Canceled)
+				throw new ArgumentException("Can not update this order because it's already delivered or canceled");
+
+			using var transaction = await _context.Database.BeginTransactionAsync();
+			try
+			{
+				order.Status = request.Status;
+				await _context.SaveChangesAsync();
+				await transaction.CommitAsync();
+				return true;
+			}
+			catch
+			{
+				await transaction.RollbackAsync();
+				throw;
+			}
 		}
 	}
 }
