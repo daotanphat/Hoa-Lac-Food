@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export const login = (requestData, navigate, setShowLogin) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
     try {
-        const response = await api.post('/api/Auth/login', requestData);
+        const response = await api.post('/api/Auth/login', requestData, { skipAuth: true });
 
         if (response.status === 200) {
             localStorage.setItem('token', response.data.data.token);
