@@ -12,7 +12,7 @@
     columns: #808080;
 }
 .explore-menu-list{
-    justify-content: space-between;
+    justify-content: flex-start;
     display: flex;
     align-items: center;
     gap: 30px;

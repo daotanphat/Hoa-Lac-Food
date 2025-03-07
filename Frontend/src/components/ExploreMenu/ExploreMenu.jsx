@@ -1,23 +1,41 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './ExploreMenu.css'
 import { menu_list } from '../../../assets/assets'
+import menu_1 from '../../../assets/menu_1.png'
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllCategory } from '../../redux/Category/Actions';
 
-const ExploreMenu = ({category,setCategory}) => {
+const ExploreMenu = ({ category, setCategory }) => {
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category?.categories || []);
+
+  useEffect(() => {
+    dispatch(getAllCategory());
+  }, [dispatch]);
 
   return (
     <div className='explore-menu' id='explore-menu'>
-        <h1>Explore our Menu</h1>
-        <p className='explore-menu-text'>Choose from a diverse menu featuring a delectable array of dishes crafted with the finest ingridients and culinary
-        expertise. Our mission is to satisfy your cravings and elevate your dining experience, one delicious meal at a time.</p>
+      <h1>Explore Category</h1>
+      <p className='explore-menu-text'>Discover a variety of mouthwatering dishes, carefully curated into different categories for your convenience.
+        Whether you're craving something savory, sweet, or refreshing, explore our menu to find the perfect meal for any occasion.</p>
       <div className="explore-menu-list">
-        {menu_list.map((item,index)=>{
-            return(
-                <div onClick={()=>setCategory(prev=>prev===item.menu_name?"All":item.menu_name)} key={index} className="explore-menu-list-item">
-                    <img className={category===item.menu_name?"active":""} src={item.menu_image} alt="" />
-                    <p>{item.menu_name}</p>
-                </div>
-            )
+        {/* {menu_list.map((item, index) => {
+          return (
+            <div onClick={() => setCategory(prev => prev === item.menu_name ? "All" : item.menu_name)} key={index} className="explore-menu-list-item">
+              <img className={category === item.menu_name ? "active" : ""} src={item.menu_image} alt="" />
+              <p>{item.menu_name}</p>
+            </div>
+          )
+        })} */}
+        {categories.map((item, index) => {
+          return (
+            <div onClick={() => setCategory(prev => prev === item.name ? "All" : item.name)} key={index} className="explore-menu-list-item">
+              <img className={category === item.name ? "active" : ""} src={menu_1} alt="" />
+              <p>{item.name}</p>
+            </div>
+          )
         })}
+
       </div>
       <hr />
     </div>
