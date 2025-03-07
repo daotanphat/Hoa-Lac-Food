@@ -2,10 +2,11 @@ import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_FAILURE, LOGOUT_REQ
 
 const initialState = {
     user: null,
-    isLoading: false,
-    error: null,
+    email: null,
     jwt: null,
-    message: null
+    message: null,
+    isLoading: false,
+    error: null
 }
 
 export const authReducer = (state = initialState, action) => {
@@ -27,19 +28,15 @@ export const authReducer = (state = initialState, action) => {
         case LOGIN_SUCCESS:
             return {
                 ...state,
-                user: action.payload.data.email,
-                isLoading: false,
+                user: action.payload.data.userName,
+                email: action.payload.data.email,
                 jwt: action.payload.data.token,
-                message: action.payload.message
+                message: action.payload.message,
+                isLoading: false,
+                error: null
             }
         case LOGOUT_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                user: null,
-                jwt: null,
-                message: action.payload.message
-            }
+            return initialState;
         case LOGOUT_FAILURE:
         case LOGIN_FAILURE:
         case REGISTER_FAILURE:

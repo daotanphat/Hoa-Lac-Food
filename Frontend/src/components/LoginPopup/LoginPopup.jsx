@@ -18,19 +18,7 @@ const LoginPopup = ({ setShowLogin }) => {
     e.preventDefault();
 
     if (currState === "Login") {
-      const response = await dispatch(login({ userName, password })); // ✅ Now returns actual API status
-
-      if (response.status === "succes") {
-        toast.success("Login successful!");
-        setTimeout(() => {
-          navigate('/');
-          setShowLogin(false); // Close the login popup
-        }, 1000);
-      } else if (response.status === "fail") {
-        toast.error("Invalid credentials. Please try again.");
-      } else {
-        toast.error(response.message || "An error occurred. Please try again.");
-      }
+      await dispatch(login({ userName, password }, navigate, setShowLogin));
     } else {
       // Handle signup API call (if needed)
       console.log("Signup logic here");

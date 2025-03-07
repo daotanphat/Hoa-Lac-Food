@@ -4,6 +4,7 @@ import { assets } from '../../../assets/assets'
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../redux/Authentication/Actions';
 
 const Navbar = ({ setShowLogin }) => {
 
@@ -16,7 +17,6 @@ const Navbar = ({ setShowLogin }) => {
 
   const handleLogout = () => {
     dispatch(logout());
-    toast.success("Logged out successfully");
   };
 
   return (
@@ -39,7 +39,7 @@ const Navbar = ({ setShowLogin }) => {
         {/* If user is logged in, show dropdown */}
         {user ? (
           <div className="navbar-user">
-            <button onClick={() => setShowDropdown(!showDropdown)}>Hello, {user.name}</button>
+            <button onClick={() => setShowDropdown(!showDropdown)}>Hi, {user}</button>
             {showDropdown && (
               <div className="dropdown-menu">
                 <Link to="/profile">Information</Link>
