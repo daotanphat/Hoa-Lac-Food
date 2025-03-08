@@ -1,0 +1,21 @@
+.menu-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.menu-sidebar {
+    width: 25%;
+}
+
+.menu-content {
+    width: 75%;
+}
+
+.search-box {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}

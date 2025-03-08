@@ -1,0 +1,29 @@
+.category-filter {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.category-filter h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.category-filter ul {
+    list-style: none;
+    padding: 0;
+}
+
+.category-filter li {
+    padding: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.category-filter li:hover,
+.category-filter li.active {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
