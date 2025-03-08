@@ -1,32 +1,45 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './Navbar.css'
 import { assets } from '../../../assets/assets'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/Authentication/Actions';
 
 const Navbar = ({ setShowLogin }) => {
+  const location = useLocation();
+  const dispatch = useDispatch();
 
+  const [activeMenu, setActiveMenu] = useState("");
   const [menu, setMenu] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
   const { getTotalCartAmount } = useContext(StoreContext);
 
   const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logout());
   };
 
+  useEffect(() => {
+    if (location.hash === "#explore-menu") {
+      const section = document.getElementById("explore-menu");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      setActiveMenu(location.pathname); // Default to pathname
+    }
+  }, [location]);
+
   return (
     <div className='navbar'>
       <Link to='/'><img src={assets.logo} alt='' className='logo' /></Link>
       <ul className="navbar-menu">
-        <Link to='/' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>home</Link>
-        <a href='/menu' onClick={() => setMenu("menu")} className={menu === "menu" ? "active" : ""}>menu</a>
+        <Link to='/' onClick={() => setMenu("home")} className={activeMenu === '/' ? "active" : ""}>home</Link>
+        <a href='/menu' onClick={() => setMenu("menu")} className={activeMenu === '/menu' ? "active" : ""}>menu</a>
         <a href='#app-download' onClick={() => setMenu("mobile-app")} className={menu === "mobile-app" ? "active" : ""}>mobile-app</a>
-        <a href='#footer' onClick={() => setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""}>contact-us</a>
+        <a href='#footer' onClick={() => setMenu("contact-us")} className={activeMenu === '/about' ? "active" : ""}>contact-us</a>
       </ul>
       <div className="navbar-right">
         <img src={assets.search_icon} alt="" />
