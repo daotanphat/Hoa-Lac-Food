@@ -2,8 +2,9 @@ import React, { useContext, useEffect } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
-import { getCartByUser } from "../../redux/Cart/Actions";
+import { getCartByUser, removeItemFromCart } from "../../redux/Cart/Actions";
 import { useDispatch, useSelector } from "react-redux";
+import { formatPrice } from '../../utils/format'
 
 const Cart = () => {
   // const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
@@ -25,6 +26,10 @@ const Cart = () => {
   }, [dispatch]);
 
   console.log(carts);
+
+  const handleRemoveItem = (cartItemId) => {
+    dispatch(removeItemFromCart(cartItemId));
+  };
 
   const getTotalCartAmount = () => {
     return carts.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -50,11 +55,11 @@ const Cart = () => {
               <div key={index} className="cart-items-title cart-items-item">
                 <img src={item.food.image} alt="" />
                 <p>{item.food.name}</p>
-                <p>{item.price}</p>
+                <p>{formatPrice(item.price)}</p>
                 <p>{item.quantity}</p>
-                <p>${item.price * item.quantity}</p>
+                <p>{formatPrice(item.price * item.quantity)}</p>
                 <p>
-                  <button>
+                  <button onClick={() => handleRemoveItem(item.id)}>
                     Remove
                   </button>
                 </p>
@@ -70,16 +75,16 @@ const Cart = () => {
           <div>
             <div className="cart-total-details">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount()}</p>
+              <p>{formatPrice(getTotalCartAmount())}</p>
             </div>
             <div className="cart-total-details">
               <p>Delivery fee</p>
-              <p>$0</p>
+              <p>{formatPrice(0)}</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <p>Total</p>
-              <p>${getTotalCartAmount()}</p>
+              <p>{formatPrice(getTotalCartAmount())}</p>
             </div>
           </div>
           <button onClick={() => navigate("/order")}>
