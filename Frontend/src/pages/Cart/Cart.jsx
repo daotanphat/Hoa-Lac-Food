@@ -1,24 +1,42 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
+import { getCartByUser } from "../../redux/Cart/Actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
-    useContext(StoreContext);
+  // const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
+  //   useContext(StoreContext);
 
+  // const navigate = useNavigate();
+
+  // if (!food_list || !cartItems) {
+  //   return <div>Loading...</div>;
+  // }
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (!food_list || !cartItems) {
-    return <div>Loading...</div>;
-  }
+  // Get cart data from Redux store
+  const carts = useSelector((state) => state.cart?.carts || []);
+
+  useEffect(() => {
+    dispatch(getCartByUser());
+  }, [dispatch]);
+
+  console.log(carts);
+
+  const getTotalCartAmount = () => {
+    return carts.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
 
   return (
     <div className="cart">
       <div className="cart-items">
         <div className="cart-items-title">
-          <p>Items</p>
-          <p>Title</p>
+          <p>Image</p>
+          <p>Name</p>
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
@@ -26,27 +44,24 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item, index) => {
-          if (cartItems[item._id] > 0) {
-            return (
-              <div>
-                <div key={index} className="cart-items-title cart-items-item">
-                  <img src={item.image} alt="" />
-                  <p>{item.name}</p>
-                  <p>{item.price}</p>
-                  <p>{cartItems[item._id]}</p>
-                  <p>${item.price * cartItems[item._id]}</p>
-                  <p>
-                    <button onClick={() => removeFromCart(item._id)}>
-                      Remove
-                    </button>
-                  </p>
-                </div>
-                <hr />
+        {carts.map((item, index) => {
+          return (
+            <div>
+              <div key={index} className="cart-items-title cart-items-item">
+                <img src={item.food.image} alt="" />
+                <p>{item.food.name}</p>
+                <p>{item.price}</p>
+                <p>{item.quantity}</p>
+                <p>${item.price * item.quantity}</p>
+                <p>
+                  <button>
+                    Remove
+                  </button>
+                </p>
               </div>
-            );
-          }
-          return null;
+              <hr />
+            </div>
+          );
         })}
       </div>
       <div className="cart-bottom">
@@ -59,12 +74,12 @@ const Cart = () => {
             </div>
             <div className="cart-total-details">
               <p>Delivery fee</p>
-              <p>${getTotalCartAmount()===0?0:2}</p>
+              <p>$0</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <p>Total</p>
-              <p>${getTotalCartAmount()===0?0:getTotalCartAmount() + 2}</p>
+              <p>${getTotalCartAmount()}</p>
             </div>
           </div>
           <button onClick={() => navigate("/order")}>
