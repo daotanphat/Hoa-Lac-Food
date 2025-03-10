@@ -23,9 +23,6 @@ const MenuPage = () => {
         dispatch(getAllFoods());
     }, [dispatch]);
 
-    console.log(categories);
-
-
     const filteredFoods = foods
         .filter(food => food.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .filter(food => selectedCategory ? food.categoryName === selectedCategory : true);
