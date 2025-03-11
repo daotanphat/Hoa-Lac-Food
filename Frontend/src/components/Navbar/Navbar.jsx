@@ -57,6 +57,7 @@ const Navbar = ({ setShowLogin }) => {
               <div className="dropdown-menu">
                 <Link to="/profile">Information</Link>
                 <Link to="/change-password">Change Password</Link>
+                <Link to="/order">My Order</Link>
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}

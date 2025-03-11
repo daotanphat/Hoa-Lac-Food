@@ -9,6 +9,7 @@ import Footer from './components/Footer/Footer'
 import AppDownload from './components/AppDownload/AppDownload'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import { ToastContainer } from 'react-toastify'
+import OrderPage from './pages/Order/Order'
 
 const App = () => {
 
@@ -26,7 +27,8 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/menu' element={<Menu />} />
           <Route path='/cart' element={<Cart />} />
-          <Route path='/order' element={<PlaceHolder />} />
+          <Route path='/checkout' element={<PlaceHolder />} />
+          <Route path='/order' element={<OrderPage />} />
         </Routes>
         <AppDownload />
 
