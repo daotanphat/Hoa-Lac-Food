@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './Navbar.css'
 import { assets } from '../../../assets/assets'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, NavLink } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/Authentication/Actions';
@@ -36,9 +36,27 @@ const Navbar = ({ setShowLogin }) => {
     <div className='navbar'>
       <Link to='/'><img src={assets.logo} alt='' className='logo' /></Link>
       <ul className="navbar-menu">
-        <Link to='/' onClick={() => setMenu("home")} className={activeMenu === '/' ? "active" : ""}>home</Link>
-        <a href='/menu' onClick={() => setMenu("menu")} className={activeMenu === '/menu' ? "active" : ""}>menu</a>
-        <a href='#app-download' onClick={() => setMenu("mobile-app")} className={menu === "mobile-app" ? "active" : ""}>mobile-app</a>
+        <NavLink
+          to="/"
+          onClick={() => setMenu("home")}
+          className={({ isActive }) => isActive ? "active" : ""}
+        >
+          home
+        </NavLink>
+        <NavLink
+          to="/menu"
+          onClick={() => setMenu("menu")}
+          className={({ isActive }) => isActive ? "active" : ""}
+        >
+          menu
+        </NavLink>
+        <NavLink
+          to="/shops"
+          onClick={() => setMenu("shops")}
+          className={({ isActive }) => isActive ? "active" : ""}
+        >
+          shops
+        </NavLink>
         <a href='#footer' onClick={() => setMenu("contact-us")} className={activeMenu === '/about' ? "active" : ""}>contact-us</a>
       </ul>
       <div className="navbar-right">

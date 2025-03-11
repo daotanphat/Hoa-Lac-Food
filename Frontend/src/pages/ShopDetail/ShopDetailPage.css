@@ -1,0 +1,337 @@
+.shop-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+/* Back Button */
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #ff5722;
+}
+
+/* Shop Header */
+.shop-header {
+    height: 300px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.shop-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.7));
+    display: flex;
+    align-items: flex-end;
+}
+
+.shop-header-content {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    padding: 2rem;
+    color: white;
+}
+
+.shop-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 4px solid white;
+    background-color: white;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.shop-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.shop-header-info {
+    flex-grow: 1;
+}
+
+.shop-header-info h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.shop-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.shop-tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.shop-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.shop-rating {
+    display: flex;
+    align-items: center;
+}
+
+.shop-rating .icon {
+    color: #ffc107;
+    margin-right: 6px;
+}
+
+.rating-count {
+    margin-left: 6px;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.shop-status .status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.shop-status .status.open {
+    background-color: #4caf50;
+    color: white;
+}
+
+.shop-status .status.closed {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Shop Details */
+.shop-details-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.shop-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.shop-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-size: 1rem;
+}
+
+.shop-info-item .icon {
+    color: #ff5722;
+}
+
+.shop-description h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.shop-description p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Menu Section */
+.shop-menu-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.shop-menu-section h2 {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.category-tab {
+    background: none;
+    border: 2px solid transparent;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.category-tab:hover {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+
+.category-tab.active {
+    background-color: #ff5722;
+    color: white;
+    border-color: #ff5722;
+}
+
+/* When active tab is hovered */
+.category-tab.active:hover {
+    background-color: #f44336;
+    border-color: #f44336;
+}
+
+.foods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.no-foods {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.no-foods p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #ff5722;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.error-container h3 {
+    color: #e74c3c;
+    margin-bottom: 1rem;
+}
+
+.error-container button {
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+.error-container button:hover {
+    background-color: #e64a19;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .shop-header {
+        height: auto;
+    }
+    
+    .shop-header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .shop-logo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .shop-header-info h1 {
+        font-size: 2rem;
+    }
+    
+    .shop-meta {
+        justify-content: center;
+    }
+    
+    .shop-tags {
+        justify-content: center;
+    }
+    
+    .foods-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .shop-header-info h1 {
+        font-size: 1.75rem;
+    }
+    
+    .foods-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-tabs {
+        justify-content: center;
+    }
+} 

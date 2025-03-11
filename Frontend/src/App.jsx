@@ -10,6 +10,8 @@ import AppDownload from './components/AppDownload/AppDownload'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import { ToastContainer } from 'react-toastify'
 import OrderPage from './pages/Order/Order'
+import ShopsPage from './pages/Shops/ShopsPage'
+import ShopDetailPage from './pages/ShopDetail/ShopDetailPage'
 
 const App = () => {
 
@@ -29,6 +31,8 @@ const App = () => {
           <Route path='/cart' element={<Cart />} />
           <Route path='/checkout' element={<PlaceHolder />} />
           <Route path='/order' element={<OrderPage />} />
+          <Route path="/shops" element={<ShopsPage />} />
+          <Route path="/shops/:shopId" element={<ShopDetailPage />} />
         </Routes>
         <AppDownload />
 

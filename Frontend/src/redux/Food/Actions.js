@@ -1,6 +1,13 @@
 import { toast } from "react-toastify";
-import { api } from '../../config/Api'; 
-import { GET_ALL_FOOD_REQUEST, GET_ALL_FOOD_SUCCESS, GET_ALL_FOOD_FAILURE } from "./ActionTypes";
+import { api } from '../../config/Api';
+import {
+    GET_ALL_FOOD_REQUEST,
+    GET_ALL_FOOD_SUCCESS,
+    GET_ALL_FOOD_FAILURE,
+    GET_SHOP_FOOD_REQUEST,
+    GET_SHOP_FOOD_SUCCESS,
+    GET_SHOP_FOOD_FAILURE
+} from "./ActionTypes";
 
 export const getTopFoods = () => async (dispatch) => {
     dispatch({ type: GET_ALL_FOOD_REQUEST });
@@ -30,6 +37,19 @@ export const getAllFoods = () => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to get food.";
         dispatch({ type: GET_ALL_FOOD_FAILURE, payload: errorMessage });
+        toast.error(errorMessage);
+    }
+};
+
+export const getShopFood = (shopId) => async (dispatch) => {
+    dispatch({ type: GET_SHOP_FOOD_REQUEST });
+
+    try {
+        const response = await api.get(`/odata/Food/GetByShop(shopId=${shopId})`);
+        dispatch({ type: GET_SHOP_FOOD_SUCCESS, payload: response.data });
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || "Failed to get shop's food items.";
+        dispatch({ type: GET_SHOP_FOOD_FAILURE, payload: errorMessage });
         toast.error(errorMessage);
     }
 };
