@@ -4,7 +4,10 @@ import {
     GET_ORDER_BY_USER_SUCCESS,
     CANCEL_ORDER_REQUEST,
     CANCEL_ORDER_SUCCESS,
-    CANCEL_ORDER_FAILURE
+    CANCEL_ORDER_FAILURE,
+    CREATE_ORDER_REQUEST,
+    CREATE_ORDER_SUCCESS,
+    CREATE_ORDER_FAILURE
 } from "./ActionTypes";
 
 const initialState = {
@@ -17,6 +20,7 @@ export const orderReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ORDER_BY_USER_REQUEST:
         case CANCEL_ORDER_REQUEST:
+        case CREATE_ORDER_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -38,9 +42,16 @@ export const orderReducer = (state = initialState, action) => {
                         : order
                 )
             };
+        case CREATE_ORDER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: null
+            };
 
         case CANCEL_ORDER_FAILURE:
         case GET_ORDER_BY_USER_FAILURE:
+        case CREATE_ORDER_FAILURE:
             return {
                 ...state,
                 loading: false,

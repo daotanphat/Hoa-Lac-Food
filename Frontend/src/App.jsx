@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from './components/Navbar/Navbar'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home/Home'
@@ -12,11 +12,8 @@ import { ToastContainer } from 'react-toastify'
 import OrderPage from './pages/Order/Order'
 import ShopsPage from './pages/Shops/ShopsPage'
 import ShopDetailPage from './pages/ShopDetail/ShopDetailPage'
-
 const App = () => {
-
-  const [showLogin, setShowLogin] = useState(false)
-
+  const [showLogin, setShowLogin] = useState(false);
 
   return (
     <>

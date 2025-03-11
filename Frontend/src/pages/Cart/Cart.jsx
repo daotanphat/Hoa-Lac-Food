@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { getCartByUser, removeItemFromCart } from "../../redux/Cart/Actions";
 import { useDispatch, useSelector } from "react-redux";
 import { formatPrice } from '../../utils/format'
+import { FaTrashAlt } from 'react-icons/fa';
 
 const Cart = () => {
   // const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
@@ -17,6 +18,7 @@ const Cart = () => {
   // }
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [selectedItems, setSelectedItems] = useState([]);
 
   // Get cart data from Redux store
   const carts = useSelector((state) => state.cart?.carts || []);
@@ -25,44 +27,71 @@ const Cart = () => {
     dispatch(getCartByUser());
   }, [dispatch]);
 
-  console.log(carts);
-
   const handleRemoveItem = (cartItemId) => {
     dispatch(removeItemFromCart(cartItemId));
   };
 
-  const getTotalCartAmount = () => {
-    return carts.reduce((total, item) => total + item.price * item.quantity, 0);
+  const handleItemSelect = (cartItemId) => {
+    setSelectedItems(prev => {
+      if (prev.includes(cartItemId)) {
+        return prev.filter(id => id !== cartItemId);
+      } else {
+        return [...prev, cartItemId];
+      }
+    });
   };
 
+  const getTotalCartAmount = () => {
+    return carts
+      .filter(item => selectedItems.includes(item.id))
+      .reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      alert("Please select at least one item to proceed to checkout");
+      return;
+    }
+    navigate("/checkout", { state: { selectedCartItemIds: selectedItems } });
+  };
 
   return (
     <div className="cart">
       <div className="cart-items">
         <div className="cart-items-title">
+          <p>Select</p>
           <p>Image</p>
           <p>Name</p>
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
-          <p>Remove</p>
+          <p>Action</p>
         </div>
         <br />
         <hr />
         {carts.map((item, index) => {
           return (
-            <div>
-              <div key={index} className="cart-items-title cart-items-item">
+            <div key={index}>
+              <div className="cart-items-title cart-items-item">
+                <input 
+                  type="checkbox" 
+                  checked={selectedItems.includes(item.id)}
+                  onChange={() => handleItemSelect(item.id)}
+                />
                 <img src={item.food.image} alt="" />
                 <p>{item.food.name}</p>
                 <p>{formatPrice(item.price)}</p>
                 <p>{item.quantity}</p>
                 <p>{formatPrice(item.price * item.quantity)}</p>
-                <p>
-                  <button onClick={() => handleRemoveItem(item.id)}>
-                    Remove
+                <div className="remove-button-container">
+                  <button 
+                    className="remove-button"
+                    onClick={() => handleRemoveItem(item.id)}
+                    title="Remove item"
+                  >
+                    <FaTrashAlt />
                   </button>
-                </p>
+                </div>
               </div>
               <hr />
             </div>
@@ -87,7 +116,14 @@ const Cart = () => {
               <p>{formatPrice(getTotalCartAmount())}</p>
             </div>
           </div>
-          <button onClick={() => navigate("/order")}>
+          <button 
+            onClick={handleCheckout}
+            disabled={selectedItems.length === 0}
+            style={{ 
+              opacity: selectedItems.length === 0 ? 0.5 : 1,
+              cursor: selectedItems.length === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
             PROCEED TO CHECKOUT
           </button>
         </div>

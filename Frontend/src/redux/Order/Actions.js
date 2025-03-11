@@ -1,4 +1,4 @@
-import { GET_ORDER_BY_USER_FAILURE, GET_ORDER_BY_USER_REQUEST, GET_ORDER_BY_USER_SUCCESS, CANCEL_ORDER_REQUEST, CANCEL_ORDER_SUCCESS, CANCEL_ORDER_FAILURE } from "./ActionTypes";
+import { GET_ORDER_BY_USER_FAILURE, GET_ORDER_BY_USER_REQUEST, GET_ORDER_BY_USER_SUCCESS, CANCEL_ORDER_REQUEST, CANCEL_ORDER_SUCCESS, CANCEL_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, CREATE_ORDER_FAILURE } from "./ActionTypes";
 import { api } from '../../config/Api';
 import { toast } from "react-toastify";
 
@@ -43,5 +43,22 @@ export const cancelOrder = (orderId) => async (dispatch) => {
         dispatch({ type: CANCEL_ORDER_FAILURE, payload: errorMessage });
         toast.error(errorMessage);
         return false;
+    }
+};
+
+export const createOrder = (orderData, navigate) => async (dispatch) => {
+    dispatch({ type: CREATE_ORDER_REQUEST });
+    try {
+        const response = await api.post('/api/Order', orderData);
+        
+        if (response.status === 200) {
+            dispatch({ type: CREATE_ORDER_SUCCESS, payload: response.data });
+            toast.success('Order created successfully!');
+            navigate('/order'); // Navigate to order page after successful creation
+        }
+    } catch (error) {
+        const errorMessage = error.response?.data || 'Failed to create order. Please try again.';
+        toast.error(errorMessage);
+        dispatch({ type: CREATE_ORDER_FAILURE, payload: errorMessage });
     }
 };

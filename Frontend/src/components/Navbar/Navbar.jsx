@@ -11,7 +11,6 @@ const Navbar = ({ setShowLogin }) => {
   const dispatch = useDispatch();
 
   const [activeMenu, setActiveMenu] = useState("");
-  const [menu, setMenu] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
   const { getTotalCartAmount } = useContext(StoreContext);
 
@@ -60,7 +59,6 @@ const Navbar = ({ setShowLogin }) => {
         <a href='#footer' onClick={() => setMenu("contact-us")} className={activeMenu === '/about' ? "active" : ""}>contact-us</a>
       </ul>
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
         <div className="navbar-search-icon">
           <Link to='/cart'><img src={assets.basket_icon} alt="" /></Link>
           <div className={getTotalCartAmount() === 0 ? "" : "dot"}>
