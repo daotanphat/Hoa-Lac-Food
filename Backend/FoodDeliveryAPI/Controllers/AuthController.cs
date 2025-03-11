@@ -3,6 +3,8 @@ using BusinessObjects;
 using BusinessObjects.Dtos;
 using BusinessObjects.Dtos.Auth.Request;
 using BusinessObjects.Dtos.Auth.Response;
+using BusinessObjects.Dtos.User.Response;
+using FoodDeliveryAPI.Helper;
 using FoodDeliveryAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,15 +21,18 @@ namespace FoodDeliveryAPI.Controllers
 		private readonly IMapper _mapper;
 		private readonly IAuthService _authService;
 		private readonly ICartService _cartService;
+		private readonly IUserService _userService;
 
 		public AuthController(UserManager<AppUser> userManager, IMapper mapper,
-			IAuthService authService, ICartService cartService, RoleManager<IdentityRole> roleManager)
+			IAuthService authService, ICartService cartService,
+			RoleManager<IdentityRole> roleManager, IUserService userService)
 		{
 			_userManager = userManager;
 			_mapper = mapper;
 			_authService = authService;
 			_cartService = cartService;
 			_roleManager = roleManager;
+			_userService = userService;
 		}
 
 		[HttpPost("register")]
@@ -94,11 +99,18 @@ namespace FoodDeliveryAPI.Controllers
 			return Ok(response);
 		}
 
-		[Authorize(Roles = "Customer")]
-		[HttpGet("test")]
-		public async Task<IActionResult> test()
+		[Authorize]
+		[HttpGet("info")]
+		public async Task<IActionResult> GetUserByUsername([FromHeader(Name = "Authorization")] string header)
 		{
-			return Ok();
+			string token = TokenHelper.ExtractBearerToken(header);
+			var user = await _userService.GetUserFromToken(token);
+			var userInfo = _mapper.Map<UserResponseDto>(user);
+			var response = new ResponseApiDto<UserResponseDto>(
+				"succes",
+				"Get user info successfully",
+				userInfo);
+			return Ok(response);
 		}
 	}
 }

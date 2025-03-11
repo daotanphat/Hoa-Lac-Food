@@ -1,4 +1,6 @@
-﻿using BusinessObjects;
+﻿using AutoMapper;
+using BusinessObjects;
+using BusinessObjects.Dtos.User.Response;
 using FoodDeliveryAPI.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +13,15 @@ namespace FoodDeliveryAPI.Service.Implement
 	{
 		private readonly ITokenService _tokenService;
 		private readonly UserManager<AppUser> _userManager;
-		public UserServiceImpl(ITokenService tokenService, UserManager<AppUser> userManager)
+		private readonly IMapper _mapper;
+		public UserServiceImpl(ITokenService tokenService, UserManager<AppUser> userManager,
+			IMapper mapper)
 		{
 			_tokenService = tokenService;
 			_userManager = userManager;
+			_mapper = mapper;
 		}
+
 		public async Task<AppUser> GetUserFromToken(string token)
 		{
 			var principal = _tokenService.GetPrincipalFromToken(token);
