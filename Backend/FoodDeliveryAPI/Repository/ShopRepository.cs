@@ -13,7 +13,8 @@ namespace FoodDeliveryAPI.Repository
 
 		public IQueryable<Shop> GetShops()
 		{
-			return _context.Shops;
+			return _context.Shops
+				.Where(s => s.Status == true);
 		}
 
 		public async Task<Shop> GetShopByName(string name)
