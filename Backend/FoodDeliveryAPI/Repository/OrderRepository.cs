@@ -26,7 +26,8 @@ namespace FoodDeliveryAPI.Repository
 				.Include(o => o.Shop)
 				.Include(o => o.OrderItems)
 				.ThenInclude(oi => oi.Food)
-				.Where(o => o.CustomerId == user.Id);
+				.Where(o => o.CustomerId == user.Id)
+				.OrderByDescending(o => o.CreateAt);
 		}
 
 		public IQueryable<Order> GetOrdersByShop(int shopId)
