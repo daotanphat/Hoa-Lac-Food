@@ -19,10 +19,11 @@ namespace FoodDeliveryAPI.Service.Implement
 		private readonly ShopRepository _shopRepo;
 		private readonly IMapper _mapper;
 		private readonly OrderItemRepository _orderItemRepo;
+		private readonly FoodRepository _foodRepo;
 		public OrderServiceImpl(OrderRepository orderRepo, CartRepository cartRepo,
 			CartItemRepository cartItemRepo, ApplicationDBContext context,
 			ShopRepository shopRepo, IMapper mapper,
-			OrderItemRepository orderItemRepo)
+			OrderItemRepository orderItemRepo, FoodRepository foodRepo)
 		{
 			_orderRepo = orderRepo;
 			_cartRepo = cartRepo;
@@ -31,6 +32,7 @@ namespace FoodDeliveryAPI.Service.Implement
 			_shopRepo = shopRepo;
 			_mapper = mapper;
 			_orderItemRepo = orderItemRepo;
+			_foodRepo = foodRepo;
 		}
 
 		public async Task<bool> CancelOrder(AppUser user, string orderId)
@@ -47,6 +49,16 @@ namespace FoodDeliveryAPI.Service.Implement
 			using var transaction = await _context.Database.BeginTransactionAsync();
 			try
 			{
+				// Increase the quantity of food items in the order
+				foreach (var orderItem in order.OrderItems)
+				{
+					var food = await _foodRepo.GetFoodByIdAsync(orderItem.FoodId);
+					if (food != null)
+					{
+						food.Quantity += orderItem.Quantity;
+					}
+				}
+
 				order.Status = OrderStatus.Canceled;
 				await _context.SaveChangesAsync();
 				await transaction.CommitAsync();
