@@ -1,6 +1,7 @@
 import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_FAILURE, LOGOUT_SUCCESS } from "./ActionTypes";
 import { api } from '../../config/Api';
 import { toast } from "react-toastify";
+import { getUserInfo } from "../User/Actions";
 
 export const login = (requestData, navigate) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
@@ -11,8 +12,8 @@ export const login = (requestData, navigate) => async (dispatch) => {
             localStorage.setItem('token', response.data.data.token);
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
             
-            // Fetch user info after successful login
-            // dispatch(getUserInfo());
+            //Fetch user info after successful login
+            dispatch(getUserInfo());
             
             toast.success(response.data.message || 'Login successfully!');
 

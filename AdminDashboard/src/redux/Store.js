@@ -4,9 +4,13 @@ import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import { thunk } from "redux-thunk";
 import { authReducer } from "./Authentication/Reducer";
+import { foodReducer } from "./Food/Reducer";
+import { userReducer } from "./User/Reducer";
 
 const rooteReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    food: foodReducer,
+    user: userReducer
 })
 
 const rootReducer = (state, action) => {
@@ -19,7 +23,7 @@ const rootReducer = (state, action) => {
 const persitConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth']
+    whitelist: ['auth', 'food', 'user']
 }
 
 const persitedReducer = persistReducer(persitConfig, rootReducer);

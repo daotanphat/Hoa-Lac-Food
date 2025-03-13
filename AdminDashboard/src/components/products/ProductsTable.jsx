@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
-import { Edit, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Edit, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getShopFood, updateFoodStatus } from "../../redux/Food/Actions";
+import { formatPrice } from "../../utils/format";
+import { toast } from "react-toastify";
 
 const PRODUCT_DATA = [
 	{ id: 1, name: "Wireless Earbuds", category: "Electronics", price: 59.99, stock: 143, sales: 1200 },
@@ -11,19 +15,34 @@ const PRODUCT_DATA = [
 ];
 
 const ProductsTable = () => {
+	const dispatch = useDispatch();
+
+	const food = useSelector((state) => state.food?.shopFoods);
+	const user = useSelector((state) => state.user?.userInfo);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
+	const [filteredProducts, setFilteredProducts] = useState(food);
+
+	useEffect(() => {
+		dispatch(getShopFood(user.shopId));
+	}, [user, dispatch]);
+
+	useEffect(() => {
+		setFilteredProducts(food);
+	}, [food]);
 
 	const handleSearch = (e) => {
 		const term = e.target.value.toLowerCase();
 		setSearchTerm(term);
-		const filtered = PRODUCT_DATA.filter(
-			(product) => product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
+		const filtered = food.filter(
+			(item) => item.name.toLowerCase().includes(term) || item.categoryName.toLowerCase().includes(term)
 		);
 
 		setFilteredProducts(filtered);
 	};
 
+	const handleToggleStatus = async (id) => {
+		await dispatch(updateFoodStatus(id));
+	};
 	return (
 		<motion.div
 			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 mb-8'
@@ -62,46 +81,53 @@ const ProductsTable = () => {
 								Stock
 							</th>
 							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Sales
+								Update
 							</th>
 							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Actions
+								Inactive
 							</th>
 						</tr>
 					</thead>
 
 					<tbody className='divide-y divide-gray-700'>
-						{filteredProducts.map((product) => (
+						{filteredProducts.map((item) => (
 							<motion.tr
-								key={product.id}
+								key={item.id}
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								transition={{ duration: 0.3 }}
 							>
 								<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100 flex gap-2 items-center'>
 									<img
-										src='https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww'
+										src={item.image}
 										alt='Product img'
 										className='size-10 rounded-full'
 									/>
-									{product.name}
+									{item.name}
 								</td>
 
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									{product.category}
+									{item.categoryName}
 								</td>
 
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									${product.price.toFixed(2)}
+									{formatPrice(item.price)}
 								</td>
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.stock}</td>
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.sales}</td>
+								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{item.quantity}</td>
 								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
 									<button className='text-indigo-400 hover:text-indigo-300 mr-2'>
 										<Edit size={18} />
 									</button>
-									<button className='text-red-400 hover:text-red-300'>
-										<Trash2 size={18} />
+								</td>
+								<td className='px-6 py-4 whitespace-nowrap text-sm'>
+									<button
+										onClick={() => handleToggleStatus(item.id)}
+										className={`px-4 py-2 rounded-md ${item.available
+											? 'bg-green-600 hover:bg-green-700'
+											: 'bg-red-600 hover:bg-red-700'
+											}`}
+									>
+										{item.available ? 'Active' : 'Inactive'}
 									</button>
 								</td>
 							</motion.tr>
