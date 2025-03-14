@@ -6,11 +6,13 @@ import { thunk } from "redux-thunk";
 import { authReducer } from "./Authentication/Reducer";
 import { foodReducer } from "./Food/Reducer";
 import { userReducer } from "./User/Reducer";
+import { orderReducer } from "./Order/Reducer";
 
 const rooteReducer = combineReducers({
     auth: authReducer,
     food: foodReducer,
-    user: userReducer
+    user: userReducer,
+    order: orderReducer
 })
 
 const rootReducer = (state, action) => {
@@ -23,7 +25,7 @@ const rootReducer = (state, action) => {
 const persitConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'food', 'user']
+    whitelist: ['auth', 'food', 'user', 'order']
 }
 
 const persitedReducer = persistReducer(persitConfig, rootReducer);

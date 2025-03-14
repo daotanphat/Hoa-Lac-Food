@@ -1,20 +1,24 @@
 import { CheckCircle, Clock, DollarSign, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
 import DailyOrders from "../components/orders/DailyOrders";
 import OrderDistribution from "../components/orders/OrderDistribution";
 import OrdersTable from "../components/orders/OrdersTable";
-
-const orderStats = {
-	totalOrders: "1,234",
-	pendingOrders: "56",
-	completedOrders: "1,178",
-	totalRevenue: "$98,765",
-};
+import { formatPrice } from "../utils/format";
 
 const OrdersPage = () => {
+    const orders = useSelector((state) => state.order.orders);
+    
+    const orderStats = {
+        totalOrders: orders.length.toLocaleString(),
+        pendingOrders: orders.filter(order => order.status !== "Delivered").length.toLocaleString(),
+        completedOrders: orders.filter(order => order.status === "Delivered").length.toLocaleString(),
+        totalRevenue: "$" + orders.reduce((total, order) => total + order.totalPrice, 0).toLocaleString()
+    };
+
 	return (
 		<div className='flex-1 relative z-10 overflow-auto'>
 			<Header title={"Orders"} />
