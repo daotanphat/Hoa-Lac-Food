@@ -38,7 +38,8 @@ namespace FoodDeliveryAPI.Repository
 				.Include(o => o.Shop)
 				.Include(o => o.OrderItems)
 					.ThenInclude(oi => oi.Food)
-				.Where(o => o.ShopId == shopId);
+				.Where(o => o.ShopId == shopId)
+				.OrderByDescending(o => o.CreateAt);
 		}
 
 		public async Task<Order> GetOrdersByIdAsync(string orderId)
