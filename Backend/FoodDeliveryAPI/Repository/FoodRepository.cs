@@ -21,7 +21,7 @@ namespace FoodDeliveryAPI.Repository
 		public async Task<bool> IsFoodExist(string foodName, int shopId)
 		{
 			var foodByShop = await _context.Foods.Where(f => f.ShopId == shopId).ToListAsync();
-			return foodByShop.Any(f => f.Name.Trim() == foodName.Trim());
+			return foodByShop.Any(f => f.Name.ToLower().Trim() == foodName.ToLower().Trim());
 		}
 
 		public async Task<Food> GetFoodByIdAsync(int id)
@@ -58,7 +58,8 @@ namespace FoodDeliveryAPI.Repository
 			return _context.Foods
 				.Include(f => f.Category)
 				.Include(f => f.Shop)
-				.Where(f => f.ShopId == shopId);
+				.Where(f => f.ShopId == shopId)
+				.OrderByDescending(f => f.CreateAt);
 		}
 
 		public IQueryable<Food> GetAllFoodAsync()

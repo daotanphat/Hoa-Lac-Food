@@ -7,12 +7,14 @@ import { authReducer } from "./Authentication/Reducer";
 import { foodReducer } from "./Food/Reducer";
 import { userReducer } from "./User/Reducer";
 import { orderReducer } from "./Order/Reducer";
+import { categoryReducer } from "./Category/Reducer";
 
 const rooteReducer = combineReducers({
     auth: authReducer,
     food: foodReducer,
     user: userReducer,
-    order: orderReducer
+    order: orderReducer,
+    category: categoryReducer
 })
 
 const rootReducer = (state, action) => {
@@ -25,7 +27,7 @@ const rootReducer = (state, action) => {
 const persitConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'food', 'user', 'order']
+    whitelist: ['auth', 'food', 'user', 'order', 'category']
 }
 
 const persitedReducer = persistReducer(persitConfig, rootReducer);
