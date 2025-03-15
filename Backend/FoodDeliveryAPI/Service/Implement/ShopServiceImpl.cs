@@ -41,6 +41,15 @@ namespace FoodDeliveryAPI.Service.Implement
 			return shopCreated;
 		}
 
+		public async Task<ShopResponseDto> GetShopById(int shopId)
+		{
+			var shop = await _shopRepo.GetShopByIdAsync(shopId);
+			if (shop == null) throw new EntityNotFoundException("Shop not found");
+
+			var response = _mapper.Map<ShopResponseDto>(shop);
+			return response;
+		}
+
 		public IQueryable<ShopResponseDto> GetShopList()
 		{
 			var shops = _shopRepo.GetShops();

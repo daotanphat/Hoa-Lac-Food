@@ -35,6 +35,18 @@ namespace FoodDeliveryAPI.Controllers
 		}
 
 		[Authorize(Roles = "Shop")]
+		[HttpGet("{shopId:int:min(1)}")]
+		public async Task<IActionResult> GetShopById([FromRoute] int shopId)
+		{
+			var shop = await _shopService.GetShopById(shopId);
+			var response = new ResponseApiDto<ShopResponseDto>(
+				"success",
+				"Get Shop infor successfully",
+				shop);
+			return Ok(response);
+		}
+
+		[Authorize(Roles = "Shop")]
 		[HttpPost]
 		public async Task<IActionResult> CreateShop([FromForm] CreateShopRequestDto request,
 			[FromHeader(Name = "Authorization")] string header)
