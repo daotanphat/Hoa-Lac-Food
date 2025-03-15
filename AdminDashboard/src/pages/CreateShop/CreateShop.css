@@ -1,0 +1,67 @@
+.create-shop-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 0;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+}
+
+.create-shop-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.image-preview {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #e1e1e1;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.upload-button {
+    background: #667eea;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background: #5a6fe4;
+}

@@ -6,8 +6,10 @@ export const getUserInfo = () => async (dispatch) => {
     try {
         const response = await api.get('/api/auth/info');
         dispatch({ type: GET_USER_INFO_SUCCESS, payload: response.data });
+        return response.data; // Return the response data
     } catch (error) {
         const errorMessage = error.response?.data || 'Get user info failed.';
         dispatch({ type: GET_USER_INFO_FAILURE, payload: errorMessage });
+        throw error;
     }
 }

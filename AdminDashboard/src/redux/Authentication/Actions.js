@@ -11,17 +11,28 @@ export const login = (requestData, navigate) => async (dispatch) => {
         if (response.status === 200) {
             localStorage.setItem('token', response.data.data.token);
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
-            
-            //Fetch user info after successful login
-            dispatch(getUserInfo());
-            
-            toast.success(response.data.message || 'Login successfully!');
 
-            setTimeout(() => {
-                navigate('/');
-            }, 500);
+            // Fetch user info and get the data directly
+            const userInfo = await dispatch(getUserInfo());
+            if (userInfo.data.shopId !== null) {
+                toast.success(response.data.message || 'Login successfully!');
+
+                setTimeout(() => {
+                    navigate('/');
+                }, 500);
+            } else {
+                toast.success('You need to create a shop first!');
+
+                setTimeout(() => {
+                    navigate('/create-shop');
+                }, 500);
+            }
+
+
         }
     } catch (error) {
+        console.log(error);
+
         const errorMessage = error.response?.data || 'Login failed. Please try again.';
         toast.error(errorMessage);
         dispatch({ type: LOGIN_FAILURE, payload: errorMessage });

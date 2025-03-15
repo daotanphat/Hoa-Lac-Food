@@ -11,10 +11,11 @@ import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import { ToastContainer } from "react-toastify";
+import CreateShop from "./pages/CreateShop";
 
 function App() {
 	const location = useLocation();
-	const authRoutes = ['/login', '/signup'];
+	const authRoutes = ['/login', '/signup', '/create-shop'];
 	const isAuthPage = authRoutes.includes(location.pathname);
 
 	return (
@@ -33,7 +34,8 @@ function App() {
 				<Routes>
 					<Route path="/login" element={<Login />} />
 					<Route path="/signup" element={<Signup />} />
-					
+					<Route path="/create-shop" element={<CreateShop />} />
+
 					{/* Protected Routes */}
 					<Route element={<ProtectedLayout />}>
 						<Route path='/' element={<OverviewPage />} />
