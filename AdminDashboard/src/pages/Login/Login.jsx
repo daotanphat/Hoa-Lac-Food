@@ -24,7 +24,7 @@ const Login = () => {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Email</label>
+                        <label>Username</label>
                         <input
                             type="text"
                             placeholder="Enter your username"

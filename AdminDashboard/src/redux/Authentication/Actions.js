@@ -1,4 +1,4 @@
-import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_FAILURE, LOGOUT_SUCCESS } from "./ActionTypes";
+import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_FAILURE, LOGOUT_SUCCESS, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionTypes";
 import { api } from '../../config/Api';
 import { toast } from "react-toastify";
 import { getUserInfo } from "../User/Actions";
@@ -46,5 +46,25 @@ export const logout = () => (dispatch) => {
         dispatch({ type: LOGOUT_SUCCESS, payload: { message: "Logout successful" } });
     } catch (error) {
         dispatch({ type: LOGOUT_FAILURE, payload: "Logout failed" });
+    }
+};
+
+export const register = (requestData, navigate) => async (dispatch) => {
+    dispatch({ type: REGISTER_REQUEST });
+    try {
+        const response = await api.post('/api/auth/register', requestData, { skipAuth: true });
+
+        if (response.status === 200) {
+            dispatch({ type: REGISTER_SUCCESS, payload: response.data });
+            toast.success(response.data.message || 'Register successfully!');
+            
+            setTimeout(() => {
+                navigate('/login');
+            }, 500);
+        }
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+        toast.error(errorMessage);
+        dispatch({ type: REGISTER_FAILURE, payload: errorMessage });
     }
 };
