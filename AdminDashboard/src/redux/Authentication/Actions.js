@@ -63,7 +63,7 @@ export const register = (requestData, navigate) => async (dispatch) => {
             }, 500);
         }
     } catch (error) {
-        const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+        const errorMessage = error.response?.data?.[0]?.description || 'Registration failed. Please try again.';
         toast.error(errorMessage);
         dispatch({ type: REGISTER_FAILURE, payload: errorMessage });
     }

@@ -1,6 +1,7 @@
 import { CREATE_SHOP_FAILURE, CREATE_SHOP_REQUEST, CREATE_SHOP_SUCCESS, GET_SHOP_BY_ID_FAILURE, GET_SHOP_BY_ID_REQUEST, GET_SHOP_BY_ID_SUCCESS, UPDATE_SHOP_FAILURE, UPDATE_SHOP_REQUEST, UPDATE_SHOP_STATEMENT_FAILURE, UPDATE_SHOP_STATEMENT_REQUEST, UPDATE_SHOP_STATEMENT_SUCCESS, UPDATE_SHOP_SUCCESS } from "./ActionTypes";
 import { api } from "../../config/Api";
 import { toast } from "react-toastify";
+import { getUserInfo } from "../User/Actions";
 
 export const createShop = (formData, navigate) => async (dispatch) => {
     dispatch({ type: CREATE_SHOP_REQUEST });
@@ -12,11 +13,12 @@ export const createShop = (formData, navigate) => async (dispatch) => {
         });
         if (response.status === 200) {
             dispatch({ type: CREATE_SHOP_SUCCESS, payload: response.data });
+            await dispatch(getUserInfo());
             toast.success("Shop created successfully!");
             navigate("/");
         }
     } catch (error) {
-        const errorMessage = error.response?.data || "Failed to create shop";
+        const errorMessage = error.response?.data?.title || error.response?.data?.message || "Failed to create shop";
         toast.error(errorMessage);
         dispatch({ type: CREATE_SHOP_FAILURE, payload: errorMessage });
     }

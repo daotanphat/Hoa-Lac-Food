@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createShop } from '../redux/Shop/Actions';
+import { createShop } from '../../redux/Shop/Actions';
 import { FaStore, FaUpload } from 'react-icons/fa';
-import './CreateShop/CreateShop.css';
+import './CreateShop.css';
 
 const CreateShop = () => {
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const CreateShop = () => {
         name: '',
         description: '',
         address: '',
-        image: null,
+        photo: null,
         bank: '',
     });
     const [errors, setErrors] = useState({
@@ -23,7 +23,7 @@ const CreateShop = () => {
         description: '',
         address: '',
         bank: '',
-        image: ''
+        photo: ''
     });
 
     const validateField = (name, value) => {
@@ -60,11 +60,11 @@ const CreateShop = () => {
         const file = e.target.files[0];
         if (file) {
             if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-                setErrors({ ...errors, image: 'Please select only JPG or PNG images' });
+                setErrors({ ...errors, photo: 'Please select only JPG or PNG images' });
                 return;
             }
-            setErrors({ ...errors, image: '' });
-            setShopData({ ...shopData, image: file });
+            setErrors({ ...errors, photo: '' });
+            setShopData({ ...shopData, photo: file });
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewUrl(reader.result);
@@ -81,7 +81,7 @@ const CreateShop = () => {
             name: validateField('name', shopData.name),
             address: validateField('address', shopData.address),
             bank: validateField('bank', shopData.bank),
-            image: !shopData.image ? 'Shop Image is required' : ''
+            photo: !shopData.photo ? 'Shop Image is required' : ''
         };
 
         setErrors(newErrors);
@@ -94,16 +94,19 @@ const CreateShop = () => {
         setLoading(true);
 
         const formData = new FormData();
-        Object.keys(shopData).forEach(key => {
-            formData.append(key, shopData[key]);
-        });
+        // Only append description if it has a value
+        if (shopData.description?.trim()) {
+            formData.append('description', shopData.description);
+        }
+        // Add other required fields
+        formData.append('name', shopData.name);
+        formData.append('address', shopData.address);
+        formData.append('bank', shopData.bank);
+        if (shopData.photo) {
+            formData.append('photo', shopData.photo);
+        }
 
-        // console.log('Form data contents:');
-        // for (let pair of formData.entries()) {
-        //     console.log(pair[0], pair[1]);
-        // }
-
-        //await dispatch(createShop(formData, navigate));
+        await dispatch(createShop(formData, navigate));
         setLoading(false);
     };
 
@@ -124,7 +127,7 @@ const CreateShop = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex gap-4">
                         <div className="form-group flex-1">
-                            <label>Shop Name</label>
+                            <label>Shop Name<span style={{ color: 'red' }}>*</span></label>
                             <input
                                 type="text"
                                 name="name"
@@ -137,7 +140,7 @@ const CreateShop = () => {
                         </div>
 
                         <div className="form-group flex-1">
-                            <label>Bank Information</label>
+                            <label>Bank Information<span style={{ color: 'red' }}>*</span></label>
                             <input
                                 type="text"
                                 name="bank"
@@ -162,7 +165,7 @@ const CreateShop = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Address</label>
+                        <label>Address<span style={{ color: 'red' }}>*</span></label>
                         <input
                             type="text"
                             name="address"
@@ -175,7 +178,7 @@ const CreateShop = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Shop Image</label>
+                        <label>Shop Image<span style={{ color: 'red' }}>*</span></label>
                         <input
                             type="file"
                             ref={fileInputRef}
@@ -191,7 +194,7 @@ const CreateShop = () => {
                             <FaUpload className="mr-2" />
                             Upload Image
                         </button>
-                        {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
+                        {errors.photo && <p className="text-red-500 text-sm mt-1">{errors.photo}</p>}
                         {previewUrl && (
                             <div className="image-preview">
                                 <img src={previewUrl} alt="Preview" />

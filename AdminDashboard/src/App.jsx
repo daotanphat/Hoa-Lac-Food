@@ -11,7 +11,7 @@ import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import { ToastContainer } from "react-toastify";
-import CreateShop from "./pages/CreateShop";
+import CreateShop from "./pages/CreateShop/CreateShop";
 import ShopPage from "./pages/ShopPage";
 
 function App() {
