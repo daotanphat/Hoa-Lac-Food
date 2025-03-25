@@ -28,9 +28,17 @@ namespace FoodDeliveryAPI.Controllers
 
 		[EnableQuery]
 		[HttpGet("/odata/shop")]
-		public async Task<IActionResult> GetShops()
+		public async Task<IActionResult> GetShops(bool? status)
 		{
-			var shops = _shopService.GetShopList();
+			IQueryable<ShopResponseDto> shops;
+			if (status.HasValue)
+			{
+				shops = _shopService.GetShopList(status);
+			}
+			else
+			{
+				shops = _shopService.GetShopList(null);
+			}
 			return Ok(shops);
 		}
 

@@ -11,7 +11,7 @@ namespace FoodDeliveryAPI.Service
 		Task<Shop> UpdateShopStatement(string shopName);
 		Task<ShopResponseDto> UpdateShop(AppUser user, UpdateShopRequestDto request);
 		Task<ShopResponseDto> UpdateShopStatus(int shopId);
-		IQueryable<ShopResponseDto> GetShopList();
+		IQueryable<ShopResponseDto> GetShopList(bool? status);
 		Task<ShopResponseDto> GetShopById(int shopId);
 	}
 }

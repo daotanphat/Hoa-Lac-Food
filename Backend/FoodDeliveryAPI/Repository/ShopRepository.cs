@@ -11,11 +11,20 @@ namespace FoodDeliveryAPI.Repository
 			_context = context;
 		}
 
-		public IQueryable<Shop> GetShops()
+		public IQueryable<Shop> GetShops(bool? status)
 		{
-			return _context.Shops
-				.Where(s => s.Status == true);
+			var shops = _context.Shops
+				.OrderByDescending(s => s.Status)
+				.ThenByDescending(s => s.CreateAt);
+
+			if (status != null)
+			{
+				shops = (IOrderedQueryable<Shop>)shops.Where(s => s.Status == status);
+			}
+
+			return shops;
 		}
+
 
 		public async Task<Shop> GetShopByName(string name)
 		{

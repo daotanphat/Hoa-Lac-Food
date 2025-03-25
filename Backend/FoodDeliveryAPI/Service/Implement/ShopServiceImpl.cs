@@ -50,9 +50,9 @@ namespace FoodDeliveryAPI.Service.Implement
 			return response;
 		}
 
-		public IQueryable<ShopResponseDto> GetShopList()
+		public IQueryable<ShopResponseDto> GetShopList(bool? status)
 		{
-			var shops = _shopRepo.GetShops();
+			var shops = _shopRepo.GetShops(status);
 			var response = _mapper.Map<IEnumerable<ShopResponseDto>>(shops);
 			return response.AsQueryable();
 		}
