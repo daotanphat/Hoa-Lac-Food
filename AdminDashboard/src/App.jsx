@@ -13,6 +13,7 @@ import Signup from "./pages/Signup/Signup";
 import { ToastContainer } from "react-toastify";
 import CreateShop from "./pages/CreateShop/CreateShop";
 import ShopPage from "./pages/ShopPage";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
 	const location = useLocation();
@@ -47,6 +48,7 @@ function App() {
 						<Route path='/analytics' element={<AnalyticsPage />} />
 						<Route path='/settings' element={<SettingsPage />} />
 						<Route path='/shop-detail' element={<ShopPage />} />
+						<Route path='/categories' element={<CategoryPage />} />
 					</Route>
 				</Routes>
 			</main>
