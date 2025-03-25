@@ -3,6 +3,7 @@ import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_FAILURE, LOGOUT_REQ
 const initialState = {
     user: null,
     email: null,
+    roles: [],
     jwt: null,
     message: null,
     isLoading: false,
@@ -30,6 +31,7 @@ export const authReducer = (state = initialState, action) => {
                 ...state,
                 user: action.payload.data.userName,
                 email: action.payload.data.email,
+                roles: action.payload.data.roles,
                 jwt: action.payload.data.token,
                 message: action.payload.message,
                 isLoading: false,

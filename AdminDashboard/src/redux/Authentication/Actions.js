@@ -14,21 +14,23 @@ export const login = (requestData, navigate) => async (dispatch) => {
 
             // Fetch user info and get the data directly
             const userInfo = await dispatch(getUserInfo());
-            if (userInfo.data.shopId !== null) {
-                toast.success(response.data.message || 'Login successfully!');
-
-                setTimeout(() => {
-                    navigate('/');
-                }, 500);
+            if (response.data.data.roles.includes('Admin')) {
+                navigate('/admin/shops');
             } else {
-                toast.success('You need to create a shop first!');
+                if (userInfo.data.shopId !== null) {
+                    toast.success(response.data.message || 'Login successfully!');
 
-                setTimeout(() => {
-                    navigate('/create-shop');
-                }, 500);
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 500);
+                } else {
+                    toast.success('You need to create a shop first!');
+
+                    setTimeout(() => {
+                        navigate('/create-shop');
+                    }, 500);
+                }
             }
-
-
         }
     } catch (error) {
         console.log(error);
@@ -57,7 +59,7 @@ export const register = (requestData, navigate) => async (dispatch) => {
         if (response.status === 200) {
             dispatch({ type: REGISTER_SUCCESS, payload: response.data });
             toast.success(response.data.message || 'Register successfully!');
-            
+
             setTimeout(() => {
                 navigate('/login');
             }, 500);
