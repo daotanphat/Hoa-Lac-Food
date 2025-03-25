@@ -11,14 +11,12 @@ namespace FoodDeliveryAPI.Service.Implement
 		private readonly UserManager<AppUser> _userManager;
 		private readonly ITokenService _tokenService;
 		private readonly SignInManager<AppUser> _signInManager;
-		private readonly ApplicationDBContext _context;
 		public AuthServiceImpl(UserManager<AppUser> userManager, ITokenService tokenService,
-			SignInManager<AppUser> signInManager, ApplicationDBContext context)
+			SignInManager<AppUser> signInManager)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_signInManager = signInManager;
-			_context = context;
 		}
 		public async Task<LoginResponseDTO> Login(LoginRequestDto request)
 		{
@@ -30,10 +28,13 @@ namespace FoodDeliveryAPI.Service.Implement
 
 			if (!result.Succeeded) return null;
 
+			var roles = await _userManager.GetRolesAsync(user);
+
 			var loginResponse = new LoginResponseDTO
 			{
 				UserName = user.UserName,
 				Email = user.Email,
+				Roles = roles.ToList(),
 				Token = _tokenService.CreateToken(user)
 			};
 
