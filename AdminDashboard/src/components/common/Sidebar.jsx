@@ -2,25 +2,71 @@ import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, Trend
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const SIDEBAR_ITEMS = [
+// Admin navigation items
+const ADMIN_ITEMS = [
+	{
+		name: "Shops",
+		icon: Users,
+		color: "#EC4899",
+		href: "/admin/shops"
+	},
+	{
+		name: "Categories",
+		icon: TrendingUp,
+		color: "#3B82F6",
+		href: "/admin/categories"
+	},
+	{
+		name: "Settings",
+		icon: Settings,
+		color: "#6EE7B7",
+		href: "/settings"
+	}
+];
+
+// Shop owner navigation items
+const SHOP_ITEMS = [
 	{
 		name: "Overview",
 		icon: BarChart2,
 		color: "#6366f1",
-		href: "/",
+		href: "/"
 	},
-	{ name: "Products", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
-	{ name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
-	// { name: "Users", icon: Users, color: "#EC4899", href: "/users" },
-	// { name: "Sales", icon: DollarSign, color: "#10B981", href: "/sales" },
-	{ name: "Categories", icon: TrendingUp, color: "#3B82F6", href: "/categories" },
-	{ name: "Shop", icon: Users, color: "#10B981", href: "/shop-detail" },
-	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
+	{
+		name: "Products",
+		icon: ShoppingBag,
+		color: "#8B5CF6",
+		href: "/products"
+	},
+	{
+		name: "Orders",
+		icon: ShoppingCart,
+		color: "#F59E0B",
+		href: "/orders"
+	},
+	{
+		name: "Shop",
+		icon: Users,
+		color: "#10B981",
+		href: "/shop-detail"
+	},
+	{
+		name: "Settings",
+		icon: Settings,
+		color: "#6EE7B7",
+		href: "/settings"
+	}
 ];
 
 const Sidebar = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const user = useSelector((state) => state.auth);
+	const isAdmin = user?.roles?.includes('Admin');
+
+	// Choose which navigation items to display based on user role
+	const SIDEBAR_ITEMS = isAdmin ? ADMIN_ITEMS : SHOP_ITEMS;
 
 	return (
 		<motion.div
@@ -65,4 +111,5 @@ const Sidebar = () => {
 		</motion.div>
 	);
 };
+
 export default Sidebar;

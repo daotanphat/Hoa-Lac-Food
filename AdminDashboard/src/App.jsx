@@ -1,4 +1,5 @@
 import { Route, Routes, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import Sidebar from "./components/common/Sidebar";
 import OverviewPage from "./pages/OverviewPage";
@@ -14,11 +15,16 @@ import { ToastContainer } from "react-toastify";
 import CreateShop from "./pages/CreateShop/CreateShop";
 import ShopPage from "./pages/ShopPage";
 import CategoryPage from "./pages/CategoryPage";
+import AdminShopPage from "./pages/AdminShopPage";
 
 function App() {
 	const location = useLocation();
 	const authRoutes = ['/login', '/signup', '/create-shop'];
 	const isAuthPage = authRoutes.includes(location.pathname);
+	const user = useSelector((state) => state.auth);
+	const isAdmin = user?.roles?.includes('Admin');
+	console.log(isAdmin);
+	
 
 	return (
 		<div className={isAuthPage ? 'w-full h-screen' : 'flex h-screen bg-gray-900 text-gray-100'}>
@@ -40,15 +46,25 @@ function App() {
 
 					{/* Protected Routes */}
 					<Route element={<ProtectedLayout />}>
-						<Route path='/' element={<OverviewPage />} />
-						<Route path='/products' element={<ProductsPage />} />
-						<Route path='/users' element={<UsersPage />} />
-						<Route path='/sales' element={<SalesPage />} />
-						<Route path='/orders' element={<OrdersPage />} />
-						<Route path='/analytics' element={<AnalyticsPage />} />
+						{isAdmin ? (
+							// Admin Routes
+							<>
+								<Route path='/admin/categories' element={<CategoryPage />} />
+								<Route path='/admin/shops' element={<AdminShopPage />} />
+							</>
+						) : (
+							// Non-Admin Routes
+							<>
+								<Route path='/' element={<OverviewPage />} />
+								<Route path='/products' element={<ProductsPage />} />
+								<Route path='/users' element={<UsersPage />} />
+								<Route path='/sales' element={<SalesPage />} />
+								<Route path='/orders' element={<OrdersPage />} />
+								<Route path='/analytics' element={<AnalyticsPage />} />
+								<Route path='/shop-detail' element={<ShopPage />} />
+							</>
+						)}
 						<Route path='/settings' element={<SettingsPage />} />
-						<Route path='/shop-detail' element={<ShopPage />} />
-						<Route path='/categories' element={<CategoryPage />} />
 					</Route>
 				</Routes>
 			</main>
