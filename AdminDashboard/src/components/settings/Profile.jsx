@@ -1,5 +1,5 @@
 import { User, LogOut } from "lucide-react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/Authentication/Actions';
 import SettingSection from "./SettingSection";
@@ -7,6 +7,8 @@ import SettingSection from "./SettingSection";
 const Profile = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	const user = useSelector((state) => state.user?.userInfo);
 
 	const handleLogout = () => {
 		dispatch(logout());
@@ -17,14 +19,14 @@ const Profile = () => {
 		<SettingSection icon={User} title={"Profile"}>
 			<div className='flex flex-col sm:flex-row items-center mb-6'>
 				<img
-					src='https://randomuser.me/api/portraits/men/3.jpg'
+					src={user.image || 'https://static.vecteezy.com/system/resources/previews/000/423/286/original/avatar-icon-vector-illustration.jpg'}
 					alt='Profile'
 					className='rounded-full w-20 h-20 object-cover mr-4'
 				/>
 
 				<div>
-					<h3 className='text-lg font-semibold text-gray-100'>John Doe</h3>
-					<p className='text-gray-400'>john.doe@example.com</p>
+					<h3 className='text-lg font-semibold text-gray-100'>{user.userName}</h3>
+					<p className='text-gray-400'>{user.email}</p>
 				</div>
 			</div>
 
