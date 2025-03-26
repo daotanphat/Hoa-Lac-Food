@@ -16,7 +16,7 @@ const MenuPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
+    const itemsPerPage = 6;
 
     useEffect(() => {
         dispatch(getAllCategory());

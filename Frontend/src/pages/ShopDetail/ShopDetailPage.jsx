@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { FaStar, FaMapMarkerAlt, FaClock, FaPhone, FaArrowLeft, FaShoppingCart } from "react-icons/fa";
+import { FaStar, FaMapMarkerAlt, FaClock, FaPhone, FaArrowLeft, FaShoppingCart, FaSearch, FaSort } from "react-icons/fa";
 import { api } from "../../config/Api";
 import FoodCard from "../../components/FoodCard/FoodCard";
+import Pagination from "../../components/Pagination/Pagination";
 import "./ShopDetailPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getShopFood } from "../../redux/Food/Actions";
@@ -13,6 +14,10 @@ const ShopDetailPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [activeCategory, setActiveCategory] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("default");
+    const itemsPerPage = 6;
 
     const shops = useSelector((state) => state.shop?.shops || []);
     const foods = useSelector((state) => state.food?.shopFoods || []);
@@ -25,6 +30,11 @@ const ShopDetailPage = () => {
         dispatch(getShopFood(shopId));
     }, [shopId, dispatch]);
 
+    useEffect(() => {
+        // Reset to page 1 when category, search, or sort changes
+        setCurrentPage(1);
+    }, [activeCategory, searchTerm, sortOrder]);
+
     const handleCategoryClick = (categoryName) => {
         // If clicking the active category, reset to "all"
         if (activeCategory === categoryName) {
@@ -34,13 +44,77 @@ const ShopDetailPage = () => {
         }
     };
 
-    // Filter foods by category
-    const filteredFoods = activeCategory === "all"
-        ? foods
-        : foods.filter(food => food.categoryName === activeCategory);
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSortChange = (e) => {
+        setSortOrder(e.target.value);
+    };
+
+    // Filter and sort foods
+    const filterAndSortFoods = () => {
+        let result = [...foods];
+        
+        // Category filter
+        if (activeCategory !== "all") {
+            result = result.filter(food => food.categoryName === activeCategory);
+        }
+        
+        // Search filter
+        if (searchTerm.trim() !== "") {
+            const term = searchTerm.toLowerCase().trim();
+            result = result.filter(food => 
+                food.name.toLowerCase().includes(term) || 
+                (food.description && food.description.toLowerCase().includes(term))
+            );
+        }
+        
+        // Sort by price
+        switch(sortOrder) {
+            case "low-to-high":
+                result.sort((a, b) => a.price - b.price);
+                break;
+            case "high-to-low":
+                result.sort((a, b) => b.price - a.price);
+                break;
+            case "name-asc":
+                result.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case "name-desc":
+                result.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            default:
+                // Default order (as returned from API)
+                break;
+        }
+        
+        return result;
+    };
+
+    const filteredAndSortedFoods = filterAndSortFoods();
+
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredAndSortedFoods.length / itemsPerPage);
+    const paginatedFoods = filteredAndSortedFoods.slice(
+        (currentPage - 1) * itemsPerPage, 
+        currentPage * itemsPerPage
+    );
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Scroll to menu section when page changes
+        document.querySelector('.shop-menu-section').scrollIntoView({ behavior: 'smooth' });
+    };
 
     const handleBackClick = () => {
         navigate(-1);
+    };
+
+    const clearFilters = () => {
+        setSearchTerm("");
+        setSortOrder("default");
+        setActiveCategory("all");
     };
 
     if (loading) {
@@ -143,6 +217,42 @@ const ShopDetailPage = () => {
             <div className="shop-menu-section">
                 <h2>Menu</h2>
 
+                {/* Search and Filter Bar */}
+                <div className="search-filter-bar">
+                    <div className="search-box">
+                        <FaSearch className="search-icon" />
+                        <input 
+                            type="text" 
+                            placeholder="Search menu items..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                    
+                    <div className="filter-box">
+                        <label htmlFor="sort-order">
+                            <FaSort className="filter-icon" /> Sort by:
+                        </label>
+                        <select 
+                            id="sort-order" 
+                            value={sortOrder}
+                            onChange={handleSortChange}
+                        >
+                            <option value="default">Default</option>
+                            <option value="low-to-high">Price: Low to High</option>
+                            <option value="high-to-low">Price: High to Low</option>
+                            <option value="name-asc">Name: A to Z</option>
+                            <option value="name-desc">Name: Z to A</option>
+                        </select>
+                    </div>
+
+                    {(searchTerm || sortOrder !== "default" || activeCategory !== "all") && (
+                        <button className="clear-filters" onClick={clearFilters}>
+                            Clear Filters
+                        </button>
+                    )}
+                </div>
+
                 {/* Category Tabs */}
                 <div className="category-tabs">
                     {categories.map((category, index) => (
@@ -157,19 +267,27 @@ const ShopDetailPage = () => {
                 </div>
 
                 {/* Food Items */}
-                {filteredFoods.length === 0 ? (
+                {filteredAndSortedFoods.length === 0 ? (
                     <div className="no-foods">
-                        <p>No items available in this category.</p>
+                        <p>No items found matching your filters.</p>
+                        <button className="clear-filters-btn" onClick={clearFilters}>Clear All Filters</button>
                     </div>
                 ) : (
-                    <div className="foods-grid">
-                        {filteredFoods.map((food) => (
-                            <FoodCard
-                                key={food.id}
-                                food={food}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        <div className="foods-grid">
+                            {paginatedFoods.map((food) => (
+                                <FoodCard
+                                    key={food.id}
+                                    food={food}
+                                />
+                            ))}
+                        </div>
+                        <Pagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
                 )}
             </div>
         </div>
