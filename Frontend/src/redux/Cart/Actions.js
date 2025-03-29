@@ -5,12 +5,11 @@ import { toast } from "react-toastify";
 export const addFoodToCart = (requestData) => async (dispatch) => {
     dispatch({ type: ADD_FOOD_TO_CART_REQUEST });
     try {
-        toast.success("Food added to cart successfully!");
         const response = await api.put(
             "/api/cart/add/food",
             requestData,
         );
-
+        toast.success("Food added to cart successfully!");
         dispatch({ type: ADD_FOOD_TO_CART_SUCCESS, payload: response.data });
     } catch (error) {
         console.log(error);

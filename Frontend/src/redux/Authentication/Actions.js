@@ -11,10 +11,10 @@ export const login = (requestData, navigate, setShowLogin) => async (dispatch) =
         if (response.status === 200) {
             localStorage.setItem('token', response.data.data.token);
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
-            
+
             // Fetch user info after successful login
             dispatch(getUserInfo());
-            
+
             toast.success(response.data.message || 'Login successfully!');
 
             setTimeout(() => {
@@ -29,11 +29,14 @@ export const login = (requestData, navigate, setShowLogin) => async (dispatch) =
     }
 }
 
-export const logout = () => (dispatch) => {
+export const logout = (navigate) => (dispatch) => {
     try {
         localStorage.removeItem("token");
         toast.success("Logged out successfully");
         dispatch({ type: LOGOUT_SUCCESS, payload: { message: "Logout successful" } });
+        setTimeout(() => {
+            navigate('/');
+        }, 2000);
     } catch (error) {
         dispatch({ type: LOGOUT_FAILURE, payload: "Logout failed" });
     }

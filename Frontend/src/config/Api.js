@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const API_URL = "http://localhost:5168";
 
@@ -25,8 +26,12 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
+            toast.error("Please log in to perform this action");
             localStorage.removeItem("token"); // Remove invalid token
-            window.location.href = "/login"; // Redirect to login page
+            // Add delay before redirect to allow toast to display
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 500);
         }
         return Promise.reject(error);
     }

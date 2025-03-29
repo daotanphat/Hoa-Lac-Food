@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './Navbar.css'
 import { assets } from '../../../assets/assets'
-import { Link, useLocation, NavLink } from 'react-router-dom';
+import { Link, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/Authentication/Actions';
@@ -9,6 +9,7 @@ import { logout } from '../../redux/Authentication/Actions';
 const Navbar = ({ setShowLogin }) => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [activeMenu, setActiveMenu] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -17,7 +18,7 @@ const Navbar = ({ setShowLogin }) => {
   const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logout(navigate));
   };
 
   useEffect(() => {
