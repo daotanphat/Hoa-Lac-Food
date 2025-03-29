@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using OfficeOpenXml;
 
 namespace FoodDeliveryAPI.Controllers
 {
@@ -115,6 +116,46 @@ namespace FoodDeliveryAPI.Controllers
 					"Cancel order failed!",
 					"Order can only be cancel if payment is not paid."));
 			}
+		}
+
+		[EnableQuery]
+		[Authorize(Roles = "Shop")]
+		[HttpGet("/odata/order/shop/export-excel")]
+		public async Task<IActionResult> ExportOrderToExcel([FromHeader(Name = "Authorization")] string header, ODataQueryOptions<OrderResponseDto> queryOptions)
+		{
+			var user = await GetAuthenticatedUser(header);
+			var orders = _orderService.GetOrdersByShop(user);
+
+			var filteredOrders = (IQueryable<OrderResponseDto>)queryOptions.ApplyTo(orders);
+
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+			using var package = new ExcelPackage();
+			var workSheet = package.Workbook.Worksheets.Add($"Orders");
+
+			workSheet.Cells[1, 1].Value = "ID";
+			workSheet.Cells[1, 2].Value = "Customer Email";
+			workSheet.Cells[1, 3].Value = "Total Price";
+			workSheet.Cells[1, 4].Value = "Status";
+			workSheet.Cells[1, 5].Value = "Payment Status";
+			workSheet.Cells[1, 6].Value = "Date";
+
+			var orderList = filteredOrders.ToList();
+			for (int i = 0; i < orderList.Count; i++)
+			{
+				var order = orderList[i];
+				workSheet.Cells[i + 2, 1].Value = order.Id;
+				workSheet.Cells[i + 2, 2].Value = order.Customer.Email;
+				workSheet.Cells[i + 2, 3].Value = order.TotalPrice;
+				workSheet.Cells[i + 2, 4].Value = order.Status.ToString();
+				workSheet.Cells[i + 2, 5].Value = order.PaymentStatus.ToString();
+				workSheet.Cells[i + 2, 6].Value = order.CreateAt.ToString("yyyy-MM-dd HH:mm:ss");
+			}
+
+			var stream = new MemoryStream();
+			await package.SaveAsAsync(stream);
+			stream.Position = 0;
+			return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
 		}
 	}
 }

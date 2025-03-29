@@ -23,8 +23,6 @@ function App() {
 	const isAuthPage = authRoutes.includes(location.pathname);
 	const user = useSelector((state) => state.auth);
 	const isAdmin = user?.roles?.includes('Admin');
-	console.log(isAdmin);
-	
 
 	return (
 		<div className={isAuthPage ? 'w-full h-screen' : 'flex h-screen bg-gray-900 text-gray-100'}>

@@ -7,10 +7,10 @@ import StatCard from "../components/common/StatCard";
 import DailyOrders from "../components/orders/DailyOrders";
 import OrderDistribution from "../components/orders/OrderDistribution";
 import OrdersTable from "../components/orders/OrdersTable";
-import { formatPrice } from "../utils/format";
 
 const OrdersPage = () => {
-    const orders = useSelector((state) => state.order.orders);
+    const orders = useSelector((state) => state.order?.orders);
+	console.log(orders);
     
     const orderStats = {
         totalOrders: orders.length.toLocaleString(),
