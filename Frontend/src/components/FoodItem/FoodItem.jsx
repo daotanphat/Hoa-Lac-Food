@@ -4,6 +4,7 @@ import { assets } from '../../../assets/assets';
 import { StoreContext } from '../../Context/StoreContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFoodToCart } from '../../redux/Cart/Actions';
+import { formatPrice } from '../../utils/format';
 
 const FoodItem = ({ id, name, price, image }) => {
 
@@ -34,7 +35,7 @@ const FoodItem = ({ id, name, price, image }) => {
                     <img src={assets.rating_starts} alt="" />
                 </div>
                 <p className="food-item-desc">Food provides essential nutrients for overall health and well-being</p>
-                <p className="food-item-price">${price}</p>
+                <p className="food-item-price">{formatPrice(price)}</p>
             </div>
         </div>
     );
