@@ -169,6 +169,15 @@ namespace FoodDeliveryAPI.Service.Implement
 			return response.AsQueryable();
 		}
 
+		public async Task<bool> UpdateOrderPaymentStatus(string orderId, UpdateOrderPaymentStatusRequest request)
+		{
+			var order = await _orderRepo.GetOrdersByIdAsync(orderId);
+			if (order == null) throw new EntityNotFoundException("Order not found"); 
+			order.PaymentStatus = request.Status;
+			await _context.SaveChangesAsync();
+			return true;
+		}
+
 		public async Task<bool> UpdateOrderStatus(AppUser user, string orderId, UpdateOrderStatusRequest request)
 		{
 			var order = await _orderRepo.GetOrdersByIdAsync(orderId);

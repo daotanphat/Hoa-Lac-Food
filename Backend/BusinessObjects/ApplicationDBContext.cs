@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ namespace BusinessObjects
 		public DbSet<OrderItem> OrderItems { get; set; }
 		public DbSet<Cart> Carts { get; set; }
 		public DbSet<CartItem> CartItems { get; set; }
+		public DbSet<Transaction> Transactions { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -131,7 +133,13 @@ namespace BusinessObjects
 				.IsRequired()
 				.OnDelete(DeleteBehavior.Cascade);
 
-			builder.Entity<IdentityRole>().HasData(roles);
+			builder.Entity<Transaction>(entity =>
+			{
+				entity.Property(e => e.TransactionDate).HasDefaultValueSql("'0000-00-00 00:00:00'");
+				entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+			});
+
+			//builder.Entity<IdentityRole>().HasData(roles);
 		}
 	}
 }

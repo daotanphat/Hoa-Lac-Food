@@ -48,7 +48,9 @@ builder.Services.AddControllers()
 		)
 	.AddJsonOptions(options =>
 	{
+		options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+		options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 	});
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>

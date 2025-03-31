@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaInfoCircle, FaTimesCircle, FaEye, FaBan } from "react-icons/fa";
+import { FaInfoCircle, FaTimesCircle, FaEye, FaBan, FaQrcode } from "react-icons/fa";
 import OrderDetailPopup from "../OrderDetailPopup/OrderDetailPopup";
+import PaymentQRPopup from "../PaymentQRPopup/PaymentQRPopup";
 import { cancelOrder } from "../../redux/Order/Actions";
 import "./OrderTable.css";
 
 const OrderTable = ({ orders }) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [cancellingOrderId, setCancellingOrderId] = useState(null);
+    const [showPaymentQR, setShowPaymentQR] = useState(false);
+    const [selectedPaymentOrder, setSelectedPaymentOrder] = useState(null);
     const dispatch = useDispatch();
     const { cancelLoading } = useSelector(state => state.order);
 
@@ -36,8 +39,9 @@ const OrderTable = ({ orders }) => {
     };
 
     // Function to render payment status badge
-    const renderPaymentBadge = (paymentStatus) => {
+    const renderPaymentBadge = (paymentStatus, order) => {
         let badgeClass = "payment-badge";
+        let clickable = false;
 
         switch (paymentStatus.toLowerCase()) {
             case "paid":
@@ -45,6 +49,7 @@ const OrderTable = ({ orders }) => {
                 break;
             case "pending":
                 badgeClass += " payment-pending";
+                clickable = true;  // Make it clickable for pending payments
                 break;
             case "failed":
                 badgeClass += " payment-failed";
@@ -53,7 +58,25 @@ const OrderTable = ({ orders }) => {
                 badgeClass += " payment-default";
         }
 
+        // If pending and clickable, wrap in a button that opens QR popup
+        if (clickable && order.status.toLowerCase() !== "cancelled") {
+            return (
+                <button 
+                    className={`${badgeClass} payment-badge-button`}
+                    onClick={() => handlePaymentClick(order)}
+                    title="Click to view payment QR code"
+                >
+                    {paymentStatus} <FaQrcode className="qr-icon" />
+                </button>
+            );
+        }
+
         return <span className={badgeClass}>{paymentStatus}</span>;
+    };
+
+    const handlePaymentClick = (order) => {
+        setSelectedPaymentOrder(order);
+        setShowPaymentQR(true);
     };
 
     const onViewOrder = (order) => {
@@ -92,7 +115,7 @@ const OrderTable = ({ orders }) => {
                                 <td className="order-id">{order.orderId}</td>
                                 <td className="price">{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(order.totalPrice)}</td>
                                 <td>{renderStatusBadge(order.status)}</td>
-                                <td>{renderPaymentBadge(order.paymentStatus)}</td>
+                                <td>{renderPaymentBadge(order.paymentStatus, order)}</td>
                                 <td>{new Date(order.createAt).toLocaleDateString("en-US")}</td>
                                 <td className="actions">
                                     <button className="info-btn" onClick={() => onViewOrder(order)}>
@@ -125,6 +148,16 @@ const OrderTable = ({ orders }) => {
                 <OrderDetailPopup
                     order={selectedOrder}
                     onClose={() => setSelectedOrder(null)}
+                />
+            )}
+
+            {showPaymentQR && selectedPaymentOrder && (
+                <PaymentQRPopup 
+                    order={selectedPaymentOrder}
+                    onClose={() => {
+                        setShowPaymentQR(false);
+                        setSelectedPaymentOrder(null);
+                    }}
                 />
             )}
         </div>

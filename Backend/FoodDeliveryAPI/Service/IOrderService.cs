@@ -11,6 +11,7 @@ namespace FoodDeliveryAPI.Service
 		IQueryable<OrderResponseDto> GetOrdersByShop(AppUser user);
 		Task<IEnumerable<OrderItemResponseDto>> GetOrderItemsOfOrder(string orderId);
 		Task<bool> UpdateOrderStatus(AppUser user, string orderId, UpdateOrderStatusRequest request);
+		Task<bool> UpdateOrderPaymentStatus(string orderId, UpdateOrderPaymentStatusRequest request);
 		Task<bool> CancelOrder(AppUser user, string orderId);
 	}
 }
