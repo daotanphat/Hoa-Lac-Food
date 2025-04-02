@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using static BusinessObjects.Enums.OrderEnums;
 
 namespace FoodDeliveryAPI.Controllers
@@ -54,9 +55,16 @@ namespace FoodDeliveryAPI.Controllers
 				}
 
 				string transactionContent = transactionRequest.Content?.Trim();
-				if (transactionContent != null && transactionContent.StartsWith("DH"))
+				if (transactionContent != null)
 				{
-					string orderIdWithoutHyphens = transactionContent.Substring("DH".Length);
+					var match = Regex.Match(transactionContent, @"DH[a-zA-Z0-9]+");
+					if (!match.Success)
+					{
+						_logger.LogWarning("Invalid transaction content format.");
+						return BadRequest(new { success = false, message = "Invalid transaction content format" });
+					}
+
+					string orderIdWithoutHyphens = match.Value.Substring(2);
 
 					var order = await _context.Orders
 						.Where(o => o.OrderId.Replace("-", "") == orderIdWithoutHyphens)
