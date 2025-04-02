@@ -8,6 +8,7 @@ using FoodDeliveryAPI.Service.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +29,10 @@ modelBuilder.EntitySet<Shop>("Shop");
 //modelBuilder.EntitySet<Order>("Order");
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+	options.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+});
 
 builder.Services.AddExceptionHandler<GlobalExceptionHanlder>();
 builder.Services.AddProblemDetails();
