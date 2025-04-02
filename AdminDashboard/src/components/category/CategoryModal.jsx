@@ -29,7 +29,7 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, category = null }) => {
             setError('Category name must be at least 3 characters long.');
             return false;
         }
-        if (!/^[a-zA-Z0-9 ]*$/.test(categoryName)) {
+        if (!/^[\p{L}0-9 ]*$/u.test(categoryName)) {
             setError('Category name cannot contain special characters.');
             return false;
         }
@@ -76,9 +76,8 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, category = null }) => {
                             type="text"
                             value={categoryName}
                             onChange={(e) => setCategoryName(e.target.value)}
-                            className={`w-full px-3 py-2 bg-gray-700 border ${
-                                error ? 'border-red-500' : 'border-gray-600'
-                            } rounded-lg text-white focus:outline-none focus:border-indigo-500`}
+                            className={`w-full px-3 py-2 bg-gray-700 border ${error ? 'border-red-500' : 'border-gray-600'
+                                } rounded-lg text-white focus:outline-none focus:border-indigo-500`}
                             placeholder="Enter category name"
                         />
                         {error && (

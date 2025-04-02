@@ -65,7 +65,7 @@ const AddFoodModal = ({ isOpen, onClose }) => {
         } else if (formData.name.length > 100) {
             tempErrors.name = 'Food name cannot exceed 100 characters.';
             isValid = false;
-        } else if (!/^[a-zA-Z0-9 ]*$/.test(formData.name)) {
+        } else if (!/^[\p{L}0-9 ]*$/u.test(formData.name)) {
             tempErrors.name = 'Food name must not contain special characters.';
             isValid = false;
         } else if (formData.name.startsWith(' ')) {
